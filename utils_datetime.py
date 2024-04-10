@@ -74,11 +74,14 @@ def get_years(dates):
     return years
 
 def parse_datetime_reports(date_strings):
-    # convertes list of datetime strings (outlook format) to list of datetime objects
-    # TODO: make robust for time zones?
+    # convertes list of datetime strings (outlook format) to list of dates
+    # TODO: make robust for time zones
+    # TODO: then rerun
     for date_string, i in zip(date_strings, range(len(date_strings))):
         if i == 0:
+            # strip time, add tzinfo, convert to UTC, get correct date
             ret = [dt.strptime(date_string, "%d-%b-%y %H:%M:%S").date()]
+
         else:
             ret.append(dt.strptime(date_string, "%d-%b-%y %H:%M:%S").date())
         #if np.mod(i, 10000) == 0:

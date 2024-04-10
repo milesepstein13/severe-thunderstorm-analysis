@@ -97,3 +97,44 @@ def plot_reports(reports, output_location, categories, show = False):
         plt.savefig(output_location + '/report_' + category + '.png')
         if not show:
             plt.close()
+
+
+# For MCA notebook:
+def make_submap(pph, ax, data, title, day_colors):
+    ax.add_feature(cp.feature.LAND,facecolor='grey')
+    ax.add_feature(cp.feature.OCEAN, alpha = 0.5)
+    ax.add_feature(cp.feature.COASTLINE,linewidth=0.5)
+    ax.add_feature(cp.feature.LAKES, alpha = 0.5)
+    ax.add_feature(cp.feature.STATES,linewidth=0.5)
+    if day_colors:
+        c = ax.contourf(pph.lon.values, pph.lat.values, data, transform=cp.crs.PlateCarree(), levels=[.02,.05,.10,.15,.30,.45,.60,1.00], colors=['#008b00','#8b4726','#ffc800', '#ff0000', '#ff00ff', '#912cee', '#104e8b'])
+        plt.colorbar(c)
+    else:
+        vmax = max(-data.min(), data.max()).values
+        c = ax.contourf(pph.lon.values, pph.lat.values, data, transform=cp.crs.PlateCarree(), levels=np.linspace(-vmax, vmax, 40), cmap = 'PuOr')
+        plt.colorbar(c, ax = ax) 
+    ax.set_title(title)
+    return ax
+
+def plot_day(date_investigate, outlook_dataset_renamed, pph_renamed, hazardstring, pcs, pc_nmodes, hazard, plot_pcs, pph):
+    date_investiagate_string = date_investigate[:10]
+    fig, axs = plt.subplots(ncols= 2, subplot_kw=dict(projection = cp.crs.PlateCarree()), figsize = (15, 4))
+    axs[0] = make_submap(pph, axs[0], outlook_dataset_renamed['p_'+hazard].sel(time = date_investigate), hazardstring + ' Outlook for ' + date_investiagate_string, True)
+    axs[1] = make_submap(pph, axs[1], pph_renamed['p_perfect_'+hazard].sel(time = date_investigate), hazardstring + ' PPH for ' + date_investiagate_string, True)
+    plt.show()
+    plt.clf()
+
+    if plot_pcs:
+        fig, axs = plt.subplots(ncols= 2, figsize = (15, 4))
+        axs[0].plot(pcs['left'].sel(time = date_investigate)[:pc_nmodes])
+        axs[0].set_ylabel('PC Value')
+        axs[0].set_xlabel('Mode')
+        axs[0].set_xticks(range(pc_nmodes))
+        axs[0].set_title(hazardstring + ' Outlook PC Values for ' + date_investiagate_string)
+        axs[1].plot(pcs['right'].sel(time = date_investigate)[:pc_nmodes])
+        axs[1].set_ylabel('PC Value')
+        axs[1].set_xlabel('Mode')
+        axs[1].set_xticks(range(pc_nmodes))
+        axs[1].set_title(hazardstring + ' PPH PC Values for ' + date_investiagate_string)
+        plt.show()
+        plt.clf()
