@@ -6,5 +6,5 @@ End-to-end usage:
 
 
 Offshoots:
-mcax.ipynb does MCA analysis of full dataset 
+* mcax.ipynb does MCA analysis of full dataset 
 
