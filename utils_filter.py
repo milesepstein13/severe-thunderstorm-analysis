@@ -16,6 +16,7 @@ from utils_datetime import *
 
 def identify_dates_above_threshold(outlooks, threshold):
     # returns list of dates where there was ever a forecast at threshold in dataframe outlooks
+    # TODO: do by hazard type? And should we allow later day 1 outlooks to bump up the category of a day? NO
     filtered = outlooks[outlooks['THRESHOLD'] == threshold]
     return filtered['DATE'].unique()
 
