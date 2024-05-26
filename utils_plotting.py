@@ -51,14 +51,14 @@ def plot_pph_day(pph_date, output_location, categories, show = False):
         ax.add_feature(cp.feature.LAKES, alpha = 0.5)
         ax.add_feature(cp.feature.STATES,linewidth=0.5)
 
-        plt.contourf(pph_date_category.lon.values, pph_date_category.lat.values, pph_date_category['p_perfect_' + category].values[0,:,:],
+        plt.contourf(pph_date_category.lon.values, pph_date_category.lat.values, pph_date_category['p_perfect_' + category].values[:,:],
                     levels=[0,2], colors=['#FFFFFF'],
                     transform=cp.crs.PlateCarree(), alpha=0.)
         try:
-            c = plt.contourf(pph_date_category.lon.values, pph_date_category.lat.values, pph_date_category['p_perfect_' + category].values[0,:,:],
+            c = plt.contourf(pph_date_category.lon.values, pph_date_category.lat.values, pph_date_category['p_perfect_' + category].values[:,:],
                     levels=[2,5,10,15,30,45,60,100], colors=['#008b00','#8b4726','#ffc800', '#ff0000', '#ff00ff', '#912cee', '#104e8b'],
                     transform=cp.crs.PlateCarree())
-            plt.annotate('PPER Max\n'+str(pph_date_category['p_perfect_' + category].values[0,:,:].max().round(1))+'%', xy=(0.88, 0.3), xycoords="figure fraction",
+            plt.annotate('PPER Max\n'+str(pph_date_category['p_perfect_' + category].values[:,:].max().round(1))+'%', xy=(0.88, 0.3), xycoords="figure fraction",
                         va="center", ha="center", color='white',fontsize=12,
                         bbox=dict(boxstyle="round", fc="k"))
         except:
@@ -76,8 +76,15 @@ def plot_pph_day(pph_date, output_location, categories, show = False):
         except:
             pass
 
+        if category == 'tor':
+            cat_title = 'Tornado'
+        elif category == 'hail':
+            cat_title = 'Hail'
+        else:
+            cat_title = 'Wind'
+
         ax.set_extent([-121, -71, 23, 50])
-        plt.title('24 Hour Practically Perfect Hindcast for ' + category)
+        plt.title('24 Hour Practically Perfect Hindcast for ' + cat_title)
         plt.colorbar(c,orientation="horizontal", pad=0.01, aspect=50,fraction=.1)
         plt.savefig(output_location + '/pph_' + category + '.png')
         if not show:
