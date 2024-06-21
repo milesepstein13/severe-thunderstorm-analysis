@@ -16,6 +16,7 @@ import utils
 from xmca.xarray import xMCA
 from matplotlib.ticker import MaxNLocator
 from shapely.geometry import Point
+from geopy.geocoders import Nominatim
 
 def inside_polygon(lat_lon, geometry):
     lat_lon = (lat_lon[1], lat_lon[0])
@@ -112,3 +113,76 @@ def create_gridded_outlook_dataset(outlooks, pph, hazards, save_location):
         outlook_dataset['p_' + hazard] = me
     outlook_dataset.to_netcdf(save_location)
     return outlook_dataset
+
+def get_season_dates(outlooks, seasons):
+    dates = outlooks['DATE'].unique()
+    season_dates = [[], [], [], []]
+    for date in dates:
+        month = int(date[4:6])
+        if month == 12 or month < 3:
+            season_dates[0].append(date)
+        elif month < 6:
+            season_dates[1].append(date)
+        elif month < 9:
+            season_dates[2].append(date)
+        else:
+            season_dates[3].append(date)
+    return season_dates
+
+def get_state(lat, lon, geolocator):
+    location = geolocator.reverse(str(lat)+","+str(lon))
+    if location == None:
+        return None
+    address = location.raw['address']
+    state = address.get('state', '')
+    return state
+
+def get_region(lat, lon, west_threshold_co_nm, regions_dict, geolocator):
+    state = get_state(lat, lon, geolocator)
+    if state == 'Colorado' or state == 'New Mexico':
+        if lon < west_threshold_co_nm:
+            return('West')
+        else:
+            return('Great Plains')
+    for region in regions_dict:
+        if state in regions_dict[region]:
+            return region
+    return('NONE')
+
+
+def create_regions(pph):
+    regions = {
+        'West': [],
+        'Midwest': [],
+        'Great Plains': [],
+        'Northeast': [],
+        'South': [],
+        'NONE': []
+    }
+
+    geolocator = Nominatim(user_agent="severe_thunderstorm_miles")
+    west_threshold_co_nm = -105
+    regions_dict = { # list of states fully within each region (doesn't include AK, HI, CO, NM)
+        'West': ['Washington', 'Oregon', 'California', 'Idaho', 'Montana', 'Wyoming', 'Utah', 'Arizona'],
+        'Midwest': ['North Dakota', 'South Dakota', 'Minnesota', 'Iowa', 'Wisconsin', 'Illinois', 'Michigan', 'Indiana', 'Ohio', 'Kentucky'],
+        'Great Plains': ['Nebraska', 'Kansas', 'Oklahoma', 'Texas', 'Missouri'],
+        'Northeast': ['Maine', 'Vermont', 'New Hampshire', 'Massachusetts', 'Rhode Island', 'Connecticut', 'New York', 'Pennsylvania', 'New Jersey', 'Delaware', 'Maryland', 'District of Columbia', 'West Virginia'],
+        'South': ['Virginia', 'Arkansas', 'Louisiana', 'Tennessee', 'Mississippi', 'Alabama', 'Georgia', 'North Carolina', 'South Carolina', 'Florida']
+    }
+
+    old_year = ''
+    for date, date_pph in pph.groupby('time'):
+        if date_pph['p_perfect_total'].max() > 0:
+            year = date[0:4]
+            if year != old_year:
+                print("Finding regions for " + year)
+                old_year = year
+            max_coords = date_pph['p_perfect_total'].argmax(dim = ['x', 'y'])
+            max_x_coord = max_coords['x'].values
+            max_y_coord = max_coords['y'].values
+            lat = date_pph['lat'].loc[dict(x = max_x_coord, y = max_y_coord)].values
+            lon = date_pph['lon'].loc[dict(x = max_x_coord, y = max_y_coord)].values
+            region = get_region(lat, lon, west_threshold_co_nm, regions_dict, geolocator)
+            regions[region].append(date)
+            
+    return(regions)

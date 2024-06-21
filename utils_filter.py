@@ -29,14 +29,16 @@ def filter_reports(reports, columns, event_types):
 
 
 
-def read_datasets(data_location, moderate):
+def read_datasets(data_location, moderate, labelled):
     # reads in either full or moderate only pre-processed datasets
-    if moderate:
+    if labelled:
+        mod_string = 'labelled'
+    elif moderate:
         mod_string = 'mdt'
     else:
         mod_string = 'all'
 
-    if moderate:
+    if moderate or labelled:
         print('reading outlooks')
         outlooks = gp.read_file(data_location + '/outlooks/' + mod_string + '_outlooks.shp')
 
@@ -83,3 +85,86 @@ def add_significant_column(reports):
         i = i+1
     reports['significant'] = significant
     return reports
+
+def create_ramp_lists(outlooks, category_dict):
+
+    ramp_ups = {
+        0: [],
+        1: [],
+        2: [],
+        3: [],
+        4: [],
+        5: [],
+        6: []
+    }
+
+    ramp_downs = {
+        0: [],
+        -1: [],
+        -2: [],
+        -3: [],
+        -4: [],
+        -5: [],
+        -6: []
+    }
+
+    
+
+    old_date = '0'
+    old_do = '0'
+    first = True
+
+
+    for index, row in outlooks.iterrows(): #iterrating through each polygon in the outlook dataset
+        cat = category_dict[row['THRESHOLD']]
+        do = row['DATE_ORDER']
+        date = row['DATE']
+
+        if date != old_date: # New date, save ramp up and ramp down and save alongside old date, then reset ramps, max and min categories seen, and do threshold
+            
+            
+            if first == True:
+                first = False
+            else:
+                ramp_ups[ramp_up].append(old_date)
+                ramp_downs[ramp_down].append(old_date)
+
+            old_date = date
+            old_do = do
+            
+            ramp_down = 0
+            ramp_up = 0
+            max_cat_date = -1
+            
+            if do[-1] == '1': 
+                min_cat_date = 5 
+            else: # First outlook for this date is not day 3, so day 3 had no outlook.
+                min_cat_date = -1
+
+            max_cat_do = cat
+
+
+        elif do != old_do: # new outlook, update min and max categories seen, ramp value
+            if max_cat_do - min_cat_date > ramp_up:
+                ramp_up = max_cat_do - min_cat_date
+            if max_cat_do - max_cat_date < ramp_down:
+                ramp_down = max_cat_do - max_cat_date
+
+            if max_cat_do > max_cat_date:
+                max_cat_date = max_cat_do
+            if max_cat_do < min_cat_date:
+                min_cat_date = max_cat_do
+
+            old_do = do
+
+            max_cat_do = cat
+
+        else: # Just another threshold within the same polygon
+            if cat > max_cat_do:
+                max_cat_do = cat
+        
+
+    ramp_ups[ramp_up].append(old_date)
+    ramp_downs[ramp_down].append(old_date)
+    return(ramp_ups, ramp_downs)
+
