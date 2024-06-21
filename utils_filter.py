@@ -108,12 +108,16 @@ def create_ramp_lists(outlooks, category_dict):
         -6: []
     }
 
-    
+    ramp_categories = {
+        'up': [],
+        'down': [],
+        'both': [],
+        'neither': []
+    }
 
     old_date = '0'
     old_do = '0'
     first = True
-
 
     for index, row in outlooks.iterrows(): #iterrating through each polygon in the outlook dataset
         cat = category_dict[row['THRESHOLD']]
@@ -128,6 +132,14 @@ def create_ramp_lists(outlooks, category_dict):
             else:
                 ramp_ups[ramp_up].append(old_date)
                 ramp_downs[ramp_down].append(old_date)
+                if ramp_up > 0 and ramp_down < 0:
+                    ramp_categories['both'].append(old_date)
+                elif ramp_up > 0:
+                    ramp_categories['up'].append(old_date)
+                elif ramp_down < 0:
+                    ramp_categories['down'].append(old_date)
+                else:
+                    ramp_categories['neither'].append(old_date)
 
             old_date = date
             old_do = do
@@ -163,8 +175,17 @@ def create_ramp_lists(outlooks, category_dict):
             if cat > max_cat_do:
                 max_cat_do = cat
         
-
+    # for last iteration
     ramp_ups[ramp_up].append(old_date)
     ramp_downs[ramp_down].append(old_date)
-    return(ramp_ups, ramp_downs)
+    if ramp_up > 0 and ramp_down < 0:
+        ramp_categories['both'].append(old_date)
+    elif ramp_up > 0:
+        ramp_categories['up'].append(old_date)
+    elif ramp_down < 0:
+        ramp_categories['down'].append(old_date)
+    else:
+        ramp_categories['neither'].append(old_date)
+
+    return(ramp_ups, ramp_downs, ramp_categories)
 
