@@ -114,8 +114,8 @@ def create_gridded_outlook_dataset(outlooks, pph, hazards, save_location):
     outlook_dataset.to_netcdf(save_location)
     return outlook_dataset
 
-def get_season_dates(outlooks, seasons):
-    dates = outlooks['DATE'].unique()
+def get_season_dates(pph, seasons):
+    dates = pph['time'].unique()
     season_dates = [[], [], [], []]
     for date in dates:
         month = int(date[4:6])
@@ -147,6 +147,21 @@ def get_region(lat, lon, west_threshold_co_nm, regions_dict, geolocator):
     for region in regions_dict:
         if state in regions_dict[region]:
             return region
+    # Cases where highest PPH is out of contiguous states, usually just outside bc nearest gridpoint is on other side of border
+    if lat > 38:
+        if lon > -80.5:
+            return('Northeast')
+        elif lon > -104:
+            return('Great Plains')
+        else:
+            return('West')
+    else:
+        if lon > -93.8:
+            return('South')
+        elif lon > -106.5:
+            return('Great Plains')
+        else:
+            return('West')
     return('NONE')
 
 
