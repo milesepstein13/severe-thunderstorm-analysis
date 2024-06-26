@@ -35,7 +35,7 @@ This repository contains code to analyze Convective Outlooks, Storm Reports (and
 ## Offshoots:
 
 * `mcax.ipynb` does MCA analysis between gridded PPH and day-1 outlooks for each of the three hazard types
-* `explore_subsets.ipynb` produces 1D histograms for each label and 2D historgrams for each pair of labels (as created in `labelling.ipynb`). This is done for all dates, dates with `MAX_CAT` of MDT or HIGH, dates since MRGL and ENH were added as categorical risks, and dates with `MAX_CAT` of MDT or HIGH since MRGL and ENH were added as categorical risks. Plots are saved in [/plots/label_distributions](https://github.com/milesepstein13/severe-thunderstorm-analysis/tree/master/plots/label_distributions).
+* `explore_subsets.ipynb` produces 1D histograms for each label and 2D historgrams for each pair of labels (as created in `labelling.ipynb`). This is done for all dates (with concurrent outlook, PPH, and report data; 1987-2019), dates with `MAX_CAT` of MDT or HIGH, dates since MRGL and ENH were added as categorical risks, and dates with `MAX_CAT` of MDT or HIGH since MRGL and ENH were added as categorical risks. Plots are saved in [/plots/label_distributions](https://github.com/milesepstein13/severe-thunderstorm-analysis/tree/master/plots/label_distributions).
 
 ## Notes:
 
@@ -43,4 +43,4 @@ This repository contains code to analyze Convective Outlooks, Storm Reports (and
   * read_datasets reads in the outlooks, PPH, and reports datasets, either post-`load_data.ipynb` or post-`labelling.ipynb` (by setting argument `labelled = True`)
 * We only consider the Day 3 outlook (08z), both Day 2 outlooks (07z and 17z), and the first (06z) Day 1 outlook.
 * We only consider the categorical (as opposed to hazard-specific) outlooks.
-* Date when MRGL and ENH were added as categorical risks:
+* Date when MRGL and ENH were added as categorical risks: October 23, 2014
