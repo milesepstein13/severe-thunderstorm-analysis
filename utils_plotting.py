@@ -35,10 +35,11 @@ def plot_outlooks_day(outlooks_date, output_location, categories, show=False):
                 if not show:
                    plt.close()
 
-def plot_pph_day(pph_date, output_location, categories, show = False):
+def plot_pph_day(pph_date, output_location, categories, show = False, sig = True):
     for category in categories:
         pph_date_category = pph_date[['p_perfect_' + category, 'lat', 'lon']]
-        pph_date_category_sig = pph_date[['p_perfect_sig_' + category, 'lat', 'lon']]
+        if sig:
+            pph_date_category_sig = pph_date[['p_perfect_sig_' + category, 'lat', 'lon']]
 
         
         # credit: https://atlas.niu.edu/pperfect/BAMS/notebook_sample.html
@@ -66,15 +67,16 @@ def plot_pph_day(pph_date, output_location, categories, show = False):
                         va="center", ha="center", color='white',
                         bbox=dict(boxstyle="round", fc="k"))
             
-        try:
-            plt.contourf(pph_date_category_sig.lon.values, pph_date_category_sig.lat.values, pph_date_category_sig['p_perfect_sig_' + category].values[0,:,:],
-                    levels=[10,100], colors='none', hatches=['////'],
-                    transform=cp.crs.PlateCarree())
-            plt.contour(pph_date_category_sig.lon.values, pph_date_category_sig.lat.values, pph_date_category_sig['p_perfect_sig_' + category].values[0,:,:],
-                    levels=[10,100], colors=['k'],
-                    transform=cp.crs.PlateCarree())
-        except:
-            pass
+        if sig:    
+            try:
+                plt.contourf(pph_date_category_sig.lon.values, pph_date_category_sig.lat.values, pph_date_category_sig['p_perfect_sig_' + category].values[0,:,:],
+                        levels=[10,100], colors='none', hatches=['////'],
+                        transform=cp.crs.PlateCarree())
+                plt.contour(pph_date_category_sig.lon.values, pph_date_category_sig.lat.values, pph_date_category_sig['p_perfect_sig_' + category].values[0,:,:],
+                        levels=[10,100], colors=['k'],
+                        transform=cp.crs.PlateCarree())
+            except:
+                pass
 
         if category == 'tor':
             cat_title = 'Tornado'
@@ -97,7 +99,8 @@ def plot_reports(reports, output_location, categories, show = False):
         reports_category = reports_category[reports_category['BEGIN_LAT'] != '']
         reports_category = reports_category[reports_category['BEGIN_LON'] != '']
         reports_category['geometry'] = [Point(xy) for xy in zip(reports_category["BEGIN_LON"], reports_category["BEGIN_LAT"])]
-        ax = reports_category.plot(column = 'significant', markersize = 1)
+        print(reports_category)
+        ax = reports_category.plot(column = 'geometry', markersize = 1)
         #ax.legend(title="Significant")
         plt.title('All ' + category + ' Storm Reports')
         cx.add_basemap(ax, crs = {'init':'epsg:4326'})
