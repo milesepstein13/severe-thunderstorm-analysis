@@ -32,6 +32,7 @@ This repository contains code to analyze Convective Outlooks, Storm Reports (and
    * The modified datasets are also saved in `/data`, with `labelled_` as a prefix on the filename
    * When functions to add new labels are added, this file can be rerun with `labelled = True` to begin with already-labelled datasets and only run the additon of desired new labels.
 4. To be completed: downloading and incorporating ERA5 data associated with locations and dates of interest
+5. Further steps: ML analysis of all this data
 
 ## Offshoots:
 

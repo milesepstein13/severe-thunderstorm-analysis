@@ -81,6 +81,7 @@ def calculate_cape(ds_single, ds_pressure):
                 ds_single['cape_mp'].loc[dict(time=time, longitude = lon, latitude = lat)] = cape.magnitude
                 ds_single['cin_mp'].loc[dict(time=time, longitude = lon, latitude = lat)] = cin.magnitude
     ds_single['cape_dif'] = ds_single['cape'] - ds_single['cape_mp']
+    ds_single['cape_dif'] = ds_single['cape_dif'] * units.J / units.kg
     return ds_single
 
 

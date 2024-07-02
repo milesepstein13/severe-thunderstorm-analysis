@@ -17,7 +17,6 @@ import os
 from utils_filter import *
 from utils_datetime import *
 
-
 def plot_outlooks_day(outlooks_date, output_location, categories, show=False):
     # plots day 1, 2, and 3 outlooks for a day of given categories (hail, wind, tornado, categorical)
     outlooks_date['PRODISS'] = parse_datetime(outlooks_date['PRODISS'])
@@ -148,3 +147,9 @@ def plot_day(date_investigate, outlook_dataset_renamed, pph_renamed, hazardstrin
         axs[1].set_title(hazardstring + ' PPH PC Values for ' + date_investiagate_string)
         plt.show()
         plt.clf()
+
+
+
+
+
+
