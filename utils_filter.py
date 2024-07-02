@@ -29,24 +29,18 @@ def filter_reports(reports, columns, event_types):
 
 
 
-def read_datasets(data_location, moderate, labelled):
-    # reads in either full or moderate only pre-processed datasets
-    if labelled:
-        mod_string = 'labelled'
-    elif moderate:
-        mod_string = 'mdt'
-    else:
-        mod_string = 'all'
+def read_datasets(data_location, mod_string = all):
+    # reads in either full, moderate, or labelled pre-processed datasets
 
-    if moderate or labelled:
-        print('reading outlooks')
-        outlooks = gp.read_file(data_location + '/outlooks/' + mod_string + '_outlooks.shp')
-
-    else:
+    if mod_string == 'all':
         print('reading outlooks 1')
         outlooks = gp.read_file(data_location + '/outlooks/' + mod_string + '_outlooks_1.shp')
         print('reading outlooks 2')
         outlooks = outlooks.append(gp.read_file(data_location + '/outlooks/' + mod_string + '_outlooks_2.shp'))
+
+    else:
+        print('reading outlooks')
+        outlooks = gp.read_file(data_location + '/outlooks/' + mod_string + '_outlooks.shp')
 
     print('reading pph')
     pph = xr.open_dataset(data_location + '/pph/' + mod_string + '_pph.nc')

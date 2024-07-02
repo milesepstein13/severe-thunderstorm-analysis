@@ -17,6 +17,7 @@ This repository contains code to analyze Convective Outlooks, Storm Reports (and
      * 1 `.csv` file containing all storm reports, with only the columns of potential interest, saved into `/data/storm_reports`
    * A variable is added to each of these files identifying each CO/PPH/report with the valid date formatted as `'yyyymmdd0000'` for ease of analysis across datasets.
    * `year_list` will need to be edited to match the year ranges of downloaded Convective Outlooks
+   * This script also fixes a data issue where some day 3 forecasts issued on the last day of a month are mistakenly labelled as being for the first day of that month. [IN PROGRESS]
    * This script also identifies all dates for which there was a MDT or HIGH convective outlook issed, and saves a Convective Outlook `.shp`, PPH `.nc`, and storm report `.csv` valid on only these dates alongside the full saved datasets in the respective folders within `/data`. These datasets are not used any futher, though (since we create a more generalized version later on)
 3. Run `labelling.ipynb`
    * This reads in the CO, PPH, and report data output by `load_data.ipynb` from `/data` and adds the following variables (each date is associated with one value for each of these variables):
@@ -40,7 +41,10 @@ This repository contains code to analyze Convective Outlooks, Storm Reports (and
 ## Notes:
 
 * Functions are mostly modularized and availible in the `utils` files. Some especially useful functions are:
-  * `read_datasets` reads in the outlooks, PPH, and reports datasets, either post-`load_data.ipynb` or post-`labelling.ipynb` (by setting argument `labelled = True`)
+  * `read_datasets` in `utils_filters.py` reads in the outlooks, PPH, and reports datasets,
+  * * Use `mod_string` to read different datasets:
+    * `mod_string = 'all'`  loads post-`load_data.ipynb`
+    * `mod_string = 'labelled'` loads post-`labelling.ipynb`
 * We only consider the Day 3 outlook (08z), both Day 2 outlooks (07z and 17z), and the first (06z) Day 1 outlook.
 * We only consider the categorical (as opposed to hazard-specific) outlooks.
 * Date when MRGL and ENH were added as categorical risks: October 23, 2014

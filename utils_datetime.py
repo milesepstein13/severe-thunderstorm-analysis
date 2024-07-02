@@ -88,3 +88,17 @@ def parse_datetime_reports(date_strings):
         #    print(dt.strptime(date_string, "%Y%m%d%H%M"))
     return ret
 
+def fix_month_issue(outlooks):
+    # fixes issue where many day 3 outlooks issed on last day of a month wrongly have issue and expire times the second of the same month rather than the following month
+    d = None
+    for i, row in outlooks.iterrows():
+        if row['PRODISS'] > row['EXPIRE'] and row['DAY'] == 3:
+            if row['EXPIRE'] != d:
+                d = row['EXPIRE']
+                print('Fixing for ' + str(d))
+            # add one month to issue and expire
+            issuedate = row['ISSUE'] + pd.DateOffset(months=1)
+            expiredate = row['EXPIRE'] + pd.DateOffset(months=1)
+            outlooks.at[i, 'ISSUE'] = issuedate
+            outlooks.at[i, 'EXPIRE'] = expiredate  
+    return outlooks
