@@ -17,7 +17,7 @@ This repository contains code to analyze Convective Outlooks, Storm Reports (and
      * 1 `.csv` file containing all storm reports, with only the columns of potential interest, saved into `/data/storm_reports`
    * A variable is added to each of these files identifying each CO/PPH/report with the valid date formatted as `'yyyymmdd0000'` for ease of analysis across datasets.
    * `year_list` will need to be edited to match the year ranges of downloaded Convective Outlooks
-   * This script also fixes a data issue where some day 3 forecasts issued on the last day of a month are mistakenly labelled as being for the first day of that month. [IN PROGRESS]
+   * This script also fixes a data issue in the mesonet outlooks dataset where most day three forecasts issued on the last day of a month between 2002-2019 are mistakenly labelled (in `ISSUE` and `EXPIRE` fields)as being for the first day of that month.
    * This script also identifies all dates for which there was a MDT or HIGH convective outlook issed, and saves a Convective Outlook `.shp`, PPH `.nc`, and storm report `.csv` valid on only these dates alongside the full saved datasets in the respective folders within `/data`. These datasets are not used any futher, though (since we create a more generalized version later on)
 3. Run `labelling.ipynb`
    * This reads in the CO, PPH, and report data output by `load_data.ipynb` from `/data` and adds the following variables (each date is associated with one value for each of these variables):
