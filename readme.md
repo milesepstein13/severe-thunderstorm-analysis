@@ -4,7 +4,7 @@ This repository contains code to analyze Convective Outlooks, Storm Reports (and
 
 1. Download the following data into the `/raw_data` folder:
    * All six (hail, wind, and tornado, each with overall and sig datasets) PPH datasets from: [https://atlas.niu.edu/pperfect/BAMS/]() into `/raw_data/pph`
-     * 1979-2019 PPH data has been used, newer data may be available
+     * 1979-2022 PPH data has been used, newer data may be available
    * Each year's storm report data from: [https://www.ncdc.noaa.gov/stormevents/ftp.jsp]() into `/raw_data/storm_reports`
      * 1950-2023 Storm Report data has been used, newer data may be available
    * Day 1-3 Convective Outlooks as 'Cake Layers' from: [https://mesonet.agron.iastate.edu/request/gis/outlooks.phtml]() into `/raw_data/outlooks`. Download size may be limited, so data may need to be downloaded in several multi-year chunks (each beginning at 00:00Z Jan 1 and ending at 23:59Z Dec 31)
@@ -16,7 +16,7 @@ This repository contains code to analyze Convective Outlooks, Storm Reports (and
      * 1 `.nc` file containing all PPH, saved into `data/pph`
      * 1 `.csv` file containing all storm reports, with only the columns of potential interest, saved into `/data/storm_reports`
    * A variable is added to each of these files identifying each CO/PPH/report with the valid date formatted as `'yyyymmdd0000'` for ease of analysis across datasets.
-   * `year_list` will need to be edited to match the year ranges of downloaded Convective Outlooks
+   * `year_list` will need to be edited to match the year ranges of downloaded Convective Outlook datasets
    * This script also fixes a data issue in the mesonet outlooks dataset where most day three forecasts issued on the last day of a month between 2002-2019 are mistakenly labelled (in `ISSUE` and `EXPIRE` fields)as being for the first day of that month.
    * This script also identifies all dates for which there was a MDT or HIGH convective outlook issed, and saves a Convective Outlook `.shp`, PPH `.nc`, and storm report `.csv` valid on only these dates alongside the full saved datasets in the respective folders within `/data`. These datasets are not used any futher, though (since we create a more generalized version later on)
 3. Run `labelling.ipynb`
@@ -37,7 +37,7 @@ This repository contains code to analyze Convective Outlooks, Storm Reports (and
 ## Offshoots:
 
 * `mcax.ipynb` does MCA analysis between gridded PPH and day-1 outlooks for each of the three hazard types
-* `explore_subsets.ipynb` produces 1D histograms for each label and 2D historgrams for each pair of labels (as created in `labelling.ipynb`). This is done for all dates (with concurrent outlook, PPH, and report data; 1987-2019), dates with `MAX_CAT` of MDT or HIGH, dates since MRGL and ENH were added as categorical risks, and dates with `MAX_CAT` of MDT or HIGH since MRGL and ENH were added as categorical risks. Plots are saved in [/plots/label_distributions](https://github.com/milesepstein13/severe-thunderstorm-analysis/tree/master/plots/label_distributions).
+* `explore_subsets.ipynb` produces 1D histograms for each label and 2D historgrams for each pair of labels (as created in `labelling.ipynb`). This is done for all dates (with concurrent outlook, PPH, and report data; 1987-2022), dates with `MAX_CAT` of MDT or HIGH, dates since MRGL and ENH were added as categorical risks, and dates with `MAX_CAT` of MDT or HIGH since MRGL and ENH were added as categorical risks. Plots are saved in [/plots/label_distributions](https://github.com/milesepstein13/severe-thunderstorm-analysis/tree/master/plots/label_distributions).
   * One code block needed to be run twice for some reason. Noted with a comment.
 
 ## Notes:
