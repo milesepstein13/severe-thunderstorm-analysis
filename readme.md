@@ -23,7 +23,7 @@ This repository contains code to analyze Convective Outlooks, Storm Reports (and
    * This reads in the CO, PPH, and report data output by `load_data.ipynb` from `/data` and adds the following variables (each date is associated with one value for each of these variables):
      * `MAX_CAT`: the highest categorical risk issued valid on that date (out of `['TSTM', 'MRGL', 'SLGT', 'ENH', 'MDT', 'HIGH']`)
      * `RAMP_UP`: the maximum increase in risk levels between any two convective outlooks valid for the date (e.g., if convective outlooks are issused with SLGT, MRGL, ENH, and SLGT risk, the ramp up is `2` (MRGL to ENH))
-     * `RAMP_UP`: the maximum decrease in risk levels between any two convective outlooks valid for the date (e.g., if convective outlooks are issused with MRGL, HIGH, MDT, and SLGT risk, the ramp down is `3` (HIGH to SLGT))
+     * `RAMP_DOWN`: the maximum decrease in risk levels between any two convective outlooks valid for the date (e.g., if convective outlooks are issused with MRGL, HIGH, MDT, and SLGT risk, the ramp down is `3` (HIGH to SLGT))
      * `RAMP_CATEGORIES`: whether there is a ramp up, down, both, or neither for the given date
      * `SEASON`: meteorological season
      * `REGION`: One of: West, Midwest, Great Plains, Northeast, South, or NONE (if no storm reports on a given date). This is determined as the region (region boundaries defined [here](https://journals.ametsoc.org/view/journals/wefo/31/6/waf-d-16-0046_1.xml)) where total PPH (i.e. probability of at least one type of hazard occuring, given PPH probabilities for each hazard independently) is maximized
@@ -38,6 +38,7 @@ This repository contains code to analyze Convective Outlooks, Storm Reports (and
 
 * `mcax.ipynb` does MCA analysis between gridded PPH and day-1 outlooks for each of the three hazard types
 * `explore_subsets.ipynb` produces 1D histograms for each label and 2D historgrams for each pair of labels (as created in `labelling.ipynb`). This is done for all dates (with concurrent outlook, PPH, and report data; 1987-2019), dates with `MAX_CAT` of MDT or HIGH, dates since MRGL and ENH were added as categorical risks, and dates with `MAX_CAT` of MDT or HIGH since MRGL and ENH were added as categorical risks. Plots are saved in [/plots/label_distributions](https://github.com/milesepstein13/severe-thunderstorm-analysis/tree/master/plots/label_distributions).
+  * One code block needed to be run twice for some reason. Noted with a comment.
 
 ## Notes:
 

@@ -29,7 +29,7 @@ def filter_reports(reports, columns, event_types):
 
 
 
-def read_datasets(data_location, mod_string = all):
+def read_datasets(data_location, mod_string = 'all'):
     # reads in either full, moderate, or labelled pre-processed datasets
 
     if mod_string == 'all':
