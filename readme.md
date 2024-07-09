@@ -50,6 +50,3 @@ This repository contains code to analyze Convective Outlooks, Storm Reports (and
 * We only consider the Day 3 outlook (08z), both Day 2 outlooks (07z and 17z), and the first (06z) Day 1 outlook.
 * We only consider the categorical (as opposed to hazard-specific) outlooks.
 * Date when MRGL and ENH were added as categorical risks: October 23, 2014
-  #� �g�o�l�f�_�s�t�a�t�s�
-  �
-  �
