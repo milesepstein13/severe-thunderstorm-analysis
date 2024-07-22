@@ -30,7 +30,7 @@ This repository contains code to analyze Convective Outlooks, Storm Reports (and
      * accuracy of forecast: to be added
      * characterization by environmental data: to be added
    * The modified datasets are also saved in `/data`, with `labelled_` as a prefix on the filename
-   * When functions to add new labels are added, this file can be rerun with `labelled = True` to begin with already-labelled datasets and only run the additon of desired new labels.
+   * When functions to add new labels are added, this file can be rerun with `labelled = True` to begin with already-labelled datasets and only run the additon of desired new labels. If doing so, the pph data will be saved as `labelled_pph2.nc` (since `labelled_pph.nc` is in use). You need to manually delete `labelled_pph.nc` and then rename `labelled_pph2.nc` as labelled_pph2.nc once this file is done running.
 4. To be completed: downloading and incorporating ERA5 data associated with locations and dates of interest
 5. Further steps: ML analysis of all this data
 
