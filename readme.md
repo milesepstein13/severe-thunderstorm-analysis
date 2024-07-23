@@ -27,7 +27,18 @@ This repository contains code to analyze Convective Outlooks, Storm Reports (and
      * `RAMP_CATEGORIES`: whether there is a ramp up, down, both, or neither for the given date
      * `SEASON`: meteorological season
      * `REGION`: One of: West, Midwest, Great Plains, Northeast, South, or NONE (if no storm reports on a given date). This is determined as the region (region boundaries defined [here](https://journals.ametsoc.org/view/journals/wefo/31/6/waf-d-16-0046_1.xml)) where total PPH (i.e. probability of at least one type of hazard occuring, given PPH probabilities for each hazard independently) is maximized
-     * accuracy of forecast: to be added
+     * `MAX_PPH_NUM`: The maximum PPH at any one grid cell for the date
+     * `MAX_PPH_CAT`: The categorical risk associated with the maximum PPH at any one grid cell for the date (e.g. HIGH = 60)
+     * `NUM_REPORTS_NUM`: The total number of severe storm reports on the date
+     * `TOR_REPORTS_NUM`: The total number of tornado reports on the date
+     * `WIND_REPORTS_NUM`: The total number of severe (>= 50 kt) thunderstorm wind reports on the date
+     * `HAIL_REPORTS_NUM`: The toal number of severe (>= 1 in) hail reports on the date
+     * `MAX_TORNADO_RATING`: The highset (E)F rating of a tornado on the date
+     * `MAX_WIND_SPEED_NUM`: The highest severe thunderstorrm wind speed recorded on the date
+     * `MAX_WIND_SPEED_CAT`: One of `'sig_severe'`, `'severe'`, or `'NONE'`; the severity of the strongest thunderstorrm wind speed recorded on the date
+     * `MAX_HAIL_SIZE_NUM`: The largest hail size recorded on the date
+     * `MAX_HAIL_SIZE_CAT`: One of `'sig_severe'`, `'severe'`, or `'NONE'`; the severity of the largest hail size recorded on the date
+     * accuracy of forecast: to be added. Verification of forecasts of this type are challenging, but possible metrics are SAL, Brier score, Wavelet analysis
      * characterization by environmental data: to be added
    * The modified datasets are also saved in `/data`, with `labelled_` as a prefix on the filename
    * When functions to add new labels are added, this file can be rerun with `labelled = True` to begin with already-labelled datasets and only run the additon of desired new labels. If doing so, the pph data will be saved as `labelled_pph2.nc` (since `labelled_pph.nc` is in use). You need to manually delete `labelled_pph.nc` and then rename `labelled_pph2.nc` as labelled_pph2.nc once this file is done running.
