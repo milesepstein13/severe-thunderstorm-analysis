@@ -53,8 +53,7 @@ This repository contains code to analyze Convective Outlooks, Storm Reports (and
 ## Notes:
 
 * Functions are mostly modularized and availible in the `utils` files. Some especially useful functions are:
-  * `read_datasets` in `utils_filters.py` reads in the outlooks, PPH, and reports datasets,
-    * Use `mod_string` to read different datasets:
+  * `read_datasets` in `utils_filters.py` reads in the outlooks, PPH, and reports datasets, use `mod_string` to read different datasets:
     * `mod_string = 'all'`  loads post-`load_data.ipynb`
     * `mod_string = 'labelled'` loads post-`labelling.ipynb`
 * We only consider the Day 3 outlook (08z), both Day 2 outlooks (07z and 17z), and the first (06z) Day 1 outlook.
