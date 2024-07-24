@@ -12,14 +12,14 @@ This repository contains code to analyze Convective Outlooks, Storm Reports (and
      * 1989-2023 Convective Outlooks have been used, newer data may be available
 2. Run `load_data.ipynb`
 
-  * This reads in the downloaded CO, PPH, and report data from `/raw_data` and compiles the many files into:
-     * 2 `.shp` files containing all Convective Outlooks (since there were too many to save as one file), saved into `/data/outlooks`
-     * 1 `.nc` file containing all PPH, saved into `data/pph`
-     * 1 `.csv` file containing all storm reports, with only the columns of potential interest, saved into `/data/storm_reports`
-   * A variable is added to each of these files identifying each CO/PPH/report with the valid date formatted as `'yyyymmdd0000'` for ease of analysis across datasets.
-   * Before you run, `year_list` will need to be edited to match the year ranges of downloaded Convective Outlook datasets
-   * This script also fixes a data issue in the mesonet outlooks dataset where most day three forecasts issued on the last day of a month between 2002-2019 are mistakenly labelled (in `ISSUE` and `EXPIRE` fields) as being for the first day of that month.
-   * This script also identifies all dates for which there was a MDT or HIGH convective outlook issed, and saves a Convective Outlook `.shp`, PPH `.nc`, and storm report `.csv` valid on only these dates alongside the full saved datasets in the respective folders within `/data`. These datasets are not used any futher, though (since we create a more generalized version later on)
+    * This reads in the downloaded CO, PPH, and report data from `/raw_data` and compiles the many files into:
+       * 2 `.shp` files containing all Convective Outlooks (since there were too many to save as one file), saved into `/data/outlooks`
+       * 1 `.nc` file containing all PPH, saved into `data/pph`
+       * 1 `.csv` file containing all storm reports, with only the columns of potential interest, saved into `/data/storm_reports`
+     * A variable is added to each of these files identifying each CO/PPH/report with the valid date formatted as `'yyyymmdd0000'` for ease of analysis across datasets.
+     * Before you run, `year_list` will need to be edited to match the year ranges of downloaded Convective Outlook datasets
+     * This script also fixes a data issue in the mesonet outlooks dataset where most day three forecasts issued on the last day of a month between 2002-2019 are mistakenly labelled (in `ISSUE` and `EXPIRE` fields) as being for the first day of that month.
+     * This script also identifies all dates for which there was a MDT or HIGH convective outlook issed, and saves a Convective Outlook `.shp`, PPH `.nc`, and storm report `.csv` valid on only these dates alongside the full saved datasets in the respective folders within `/data`. These datasets are not used any futher, though (since we create a more generalized version later on)
 
 3. Run `gridize.ipynb`
    * This takes in the CO, PPH, and report data output by `load_data.ipynb` from `/data` and creates gridded netCDF files (usable by xarray) from outlook `.shp` and report `.csv` files. These `.nc` files are saved alongside the `.shp` and `.csv` files they were derived from. For each day: each outlook issued for that day is "gridized" by noting the implied probability of a storm occuring within 25 miles of each gridpoint, and reports are "gridized" by counting the number of storm reports within 25 miles of each gridpoint and noting whether or not any storm report occurred within 25 miles of each gridpoint.
