@@ -11,7 +11,6 @@ This repository contains code to analyze Convective Outlooks, Storm Reports (and
      * 1989-2023 Convective Outlooks have been used, newer data may be available
 2. Run `load_data.ipynb`
    * This reads in the downloaded CO, PPH, and report data from `/raw_data` and compiles the many files into:
-
      * 2 `.shp` files containing all Convective Outlooks (since there were too many to save as one file), saved into `/data/outlooks`
      * 1 `.nc` file containing all PPH, saved into `data/pph`
      * 1 `.csv` file containing all storm reports, with only the columns of potential interest, saved into `/data/storm_reports`
@@ -54,15 +53,12 @@ This repository contains code to analyze Convective Outlooks, Storm Reports (and
 ## Notes:
 
 * Functions are mostly modularized and availible in the `utils` files. Some especially useful functions are:
-
-  * `read_datasets` in `utils_filters.py` reads in the outlooks, PPH, and reports datasets,
-    * Use `mod_string` to read different datasets:
+  * `read_datasets` in `utils_filters.py` reads in the outlooks, PPH, and reports datasets, use `mod_string` to read different datasets:
     * `mod_string = 'all'`  loads post-`load_data.ipynb`
     * `mod_string = 'labelled'` loads post-`labelling.ipynb`
 * We only consider the Day 3 outlook (08z), both Day 2 outlooks (07z and 17z), and the first (06z) Day 1 outlook.
 * We only consider the categorical (as opposed to hazard-specific) outlooks.
 * Dates when forecast practices changed:
-
   * MRGL and ENH were added as categorical risks: October 23, 2014
   * Day 3 forecasts first issued '200203300000'
   * Day 2 7z forecasts first issued '199707100000'
