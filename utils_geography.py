@@ -29,15 +29,9 @@ def inside_polygon(lat_lon, geometry):
 
 def find_threshold(outlooks_date, lat, lon):
     # returns the threshold of the polygon that lat_lon is in, or zero if not in any
-    #print(outlooks_date)
     outlooks_date = outlooks_date.sort_values(by = 'THRESHOLD', ascending = False)
     for row in outlooks_date.iterrows():
-        #print(row)
-        #print(lat_lon)
-        #print(row)
         if inside_polygon((lat, lon), row[1]['geometry']):
-            #if float(row[1]['THRESHOLD']) > .3:
-            #    print('found at ' + str(row[1]['THRESHOLD']))
             return float(row[1]['THRESHOLD'])
     return 0
 
