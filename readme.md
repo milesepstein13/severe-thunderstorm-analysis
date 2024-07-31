@@ -20,11 +20,11 @@ This repository contains code to analyze Convective Outlooks, Storm Reports (and
    * Before you run, `year_list` will need to be edited to match the year ranges of downloaded Convective Outlook datasets
    * This script also fixes a data issue in the mesonet outlooks dataset where most day three forecasts issued on the last day of a month between 2002-2019 are mistakenly labelled (in `ISSUE` and `EXPIRE` fields) as being for the first day of that month.
    * This script also identifies all dates for which there was a MDT or HIGH convective outlook issed, and saves a Convective Outlook `.shp`, PPH `.nc`, and storm report `.csv` valid on only these dates alongside the full saved datasets in the respective folders within `/data`. These datasets are not used any futher, though (since we create a more generalized way to pull out MDT+ days)
-   * Typical running time:
+   * Typical running time: A few minutes
 3. Run `gridize.ipynb` and `gridize2.ipynb`
 
    * This takes in the CO, PPH, and report data output by `load_data.ipynb` from `/data` and creates gridded netCDF files (usable by xarray) from outlook `.shp` and report `.csv` files. These `.nc` files are saved alongside the `.shp` and `.csv` files they were derived from. For each day: each outlook issued for that day is "gridized" by noting the implied probability of a storm occuring within 25 miles of each gridpoint, and reports are "gridized" by counting the number of storm reports within 25 miles of each gridpoint and noting whether or not any storm report occurred within 25 miles of each gridpoint.
-   * Typical running time:
+   * Typical running time: `gridize.ipynb` (for outlooks) takes a few days to run (and can be resumed partway through if needed). `gridize2.ipynb` takes a few minutes
 4. Run `labelling.ipynb`
 
    * This reads in the CO, PPH, and report data output by `load_data.ipynb` from `/data` and adds the following variables (each date is associated with one value for each of these variables):
@@ -52,7 +52,7 @@ This repository contains code to analyze Convective Outlooks, Storm Reports (and
      * characterization by environmental data: to be added
      * The modified datasets are also saved in `/data`, with `labelled_` as a prefix on the filename
      * When functions to add new labels are added, this file can be rerun with `labelled = True` to begin with already-labelled datasets and only run the additon of desired new labels. If doing so, the pph data will be saved as `labelled_pph2.nc` (since `labelled_pph.nc` is in use). You need to manually delete `labelled_pph.nc` and then rename `labelled_pph2.nc` as labelled_pph2.nc once this file is done running.
-   * Typical running time:
+   * Running Time: ~20 minutes to read in data. Most labels are instant to a few minutes to add, but regions takes a few hours.
 5. To be completed: downloading and incorporating ERA5 data associated with locations and dates of interest
 6. Further steps: ML analysis of all this data
 
@@ -61,9 +61,9 @@ This repository contains code to analyze Convective Outlooks, Storm Reports (and
 * `mcax.ipynb` does MCA analysis between gridded PPH and day-1 outlooks for each of the three hazard types
 * `explore_subsets.ipynb` produces 1D histograms for each label and 2D historgrams for each pair of labels (as created in `labelling.ipynb`). This is done for all dates (with concurrent outlook, PPH, and report data; 1987-2022), dates with `MAX_CAT` of MDT or HIGH, dates since MRGL and ENH were added as categorical risks, and dates with `MAX_CAT` of MDT or HIGH since MRGL and ENH were added as categorical risks. Plots are saved in [/plots/label_distributions](https://github.com/milesepstein13/severe-thunderstorm-analysis/tree/master/plots/label_distributions).
   * One code block needed to be run twice for some reason. Noted with a comment.
-  * Typical running time:
+  * Running Time: About 20 minutes to read in data, then about 20 minutes more to plot, scaling as n^2 with number of labels
 * `clustering.ipynb` clusters all days with various methods (knn, k-means, pca?) after labelling. To Be Completed
-  * Typical running time:
+  * Running Time:
 
 ## Notes/Standards/Assumptions:
 
