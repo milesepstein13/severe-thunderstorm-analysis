@@ -62,6 +62,7 @@ This repository contains code to analyze Convective Outlooks, Storm Reports (and
 * `explore_subsets.ipynb` produces 1D histograms for each label and 2D historgrams for each pair of labels (as created in `labelling.ipynb`). This is done for all dates (with concurrent outlook, PPH, and report data; 1987-2022), dates with `MAX_CAT` of MDT or HIGH, dates since MRGL and ENH were added as categorical risks, and dates with `MAX_CAT` of MDT or HIGH since MRGL and ENH were added as categorical risks. Plots are saved in [/plots/label_distributions](https://github.com/milesepstein13/severe-thunderstorm-analysis/tree/master/plots/label_distributions).
   * One code block needed to be run twice for some reason. Noted with a comment.
   * Running Time: About 20 minutes to read in data, then about 20 minutes more to plot, scaling as n^2 with number of labels
+* `explore_date.ipynb` plots outlooks, pph, reports, and prints all labels for a date
 * `clustering.ipynb` clusters all days with various methods (knn, k-means, pca?) after labelling. To Be Completed
   * Running Time:
 
