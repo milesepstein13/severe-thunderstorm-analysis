@@ -46,9 +46,9 @@ This repository contains code to analyze Convective Outlooks, Storm Reports (and
      * `MAX_HAIL_SIZE_NUM`: The largest hail size recorded on the date
      * `MAX_HAIL_SIZE_CAT`: One of `'sig_severe'`, `'severe'`, or `'NONE'`; the severity of the largest hail size recorded on the date
      * accuracy of forecast: to be added. Verification of forecasts of this type are challenging, but possible metrics are SAL, Brier score, Wavelet analysis. To do so, gridded outlook and report datasets from step 3 are opened and used.
-       * `BS_DAY_1`: the brier score for all grid points on date between the outlook probability of seeing a storm report within 25 miles of a point and whether that actually occurred. (NOT YET DONE)
-       * `RMSE_VER`: the RMSE between the outlook probability of seeing a storm report within 25 miles and the PPH probability
-       * `NEIGHBORHOOD_VER`: the MSE between outlook probability of seeing a storm report within 25 miles and the true probability, as given by the fraction of the (VARIABLE) nearest gridpoints that had a storm report within 25 miles.
+       * `BS_NUM`: the brier score for all grid points on date between the outlook probability of seeing a storm report within 25 miles of a point and whether that actually occurred. (NOT YET DONE)
+       * `RMSE_NUM`: the RMSE between the outlook probability of seeing a storm report within 25 miles and the PPH probability
+       * `NEIGH_NUM`: the MSE between outlook probability of seeing a storm report within 25 miles and the true probability, as given by the fraction of the (VARIABLE) nearest gridpoints that had a storm report within 25 miles.
      * characterization by environmental data: to be added
      * The modified datasets are also saved in `/data`, with `labelled_` as a prefix on the filename
      * When functions to add new labels are added, this file can be rerun with `labelled = True` to begin with already-labelled datasets and only run the additon of desired new labels. If doing so, the pph data will be saved as `labelled_pph2.nc` (since `labelled_pph.nc` is in use). You need to manually delete `labelled_pph.nc` and then rename `labelled_pph2.nc` as labelled_pph2.nc once this file is done running.
@@ -62,7 +62,8 @@ This repository contains code to analyze Convective Outlooks, Storm Reports (and
 * `explore_subsets.ipynb` produces 1D histograms for each label and 2D historgrams for each pair of labels (as created in `labelling.ipynb`). This is done for all dates (with concurrent outlook, PPH, and report data; 1987-2022), dates with `MAX_CAT` of MDT or HIGH, dates since MRGL and ENH were added as categorical risks, and dates with `MAX_CAT` of MDT or HIGH since MRGL and ENH were added as categorical risks. Plots are saved in [/plots/label_distributions](https://github.com/milesepstein13/severe-thunderstorm-analysis/tree/master/plots/label_distributions).
   * One code block needed to be run twice for some reason. Noted with a comment.
   * Running Time: About 20 minutes to read in data, then about 20 minutes more to plot, scaling as n^2 with number of labels
-* `explore_date.ipynb` plots outlooks, pph, reports, and prints all labels for a date
+* `explore_date.ipynb` plots the Day 3, Day 2 7z, Day 2 17z, and Day 1 outlooks, the PPH, and reports on maps, along with printing and saving to a `.txt` file all labels, for any dates requested. The results are saved in [/plots/daily/[datestring]](https://github.com/milesepstein13/severe-thunderstorm-analysis/tree/master/plots/daily)
+  * Running time: seconds per requested date
 * `clustering.ipynb` clusters all days with various methods (knn, k-means, pca?) after labelling. To Be Completed
   * Running Time:
 
