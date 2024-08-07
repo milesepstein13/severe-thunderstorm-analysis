@@ -34,6 +34,9 @@ This repository contains code to analyze Convective Outlooks, Storm Reports (and
      * `RAMP_CATEGORIES`: whether there is a ramp up, down, both, or neither for the given date
      * `SEASON`: meteorological season
      * `REGION`: One of: West, Midwest, Great Plains, Northeast, South, or NONE (if no storm reports on a given date). This is determined as the region (region boundaries defined [here](https://journals.ametsoc.org/view/journals/wefo/31/6/waf-d-16-0046_1.xml)) where total PPH (i.e. probability of at least one type of hazard occuring, given PPH probabilities for each hazard independently) is maximized
+     * `REGION_M`: As above, but where total PPH is the max of each hazard-specific PPH (i.e. assuming dependence)
+     * LAT_NUM
+     * LON_NUM:
      * `MAX_PPH_NUM`: The maximum PPH at any one grid cell for the date
      * `MAX_PPH_CAT`: The categorical risk associated with the maximum PPH at any one grid cell for the date (e.g. HIGH = 60)
      * `NUM_REPORTS_NUM`: The total number of severe storm reports on the date
