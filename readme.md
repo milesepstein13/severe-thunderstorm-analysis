@@ -53,16 +53,12 @@ This repository contains code to analyze Convective Outlooks, Storm Reports (and
      * `MAX_HAIL_SIZE_CAT`: One of `'sig_severe'`, `'severe'`, or `'NONE'`; the severity of the largest hail size recorded on the date
      * accuracy of forecast: to be added. Verification of forecasts of this type are challenging, but possible metrics are SAL, Brier score, Wavelet analysis. To do so, gridded outlook and report datasets from step 3 are opened and used.
 
-       * `BS_NUM`: the brier score for all grid points on date between the outlook probability of seeing a storm report within 25 miles of a point and whether that actually occurred. (NOT YET DONE)
+       * `BS_NUM`: the brier score for all grid points on date between the outlook probability of seeing a storm report within 25 miles of a point and whether that actually occurred.
        * `RMSE_NUM`: the RMSE between the outlook probability of seeing a storm report within 25 miles and the PPH probability
        * `NEIGH_NUM`: the MSE between outlook probability of seeing a storm report within 25 miles and the true probability, as given by the fraction of the (VARIABLE) nearest gridpoints that had a storm report within 25 miles.
      * characterization by environmental data: to be added
      * The modified datasets are also saved in `/data`, with `labelled_` as a prefix on the filename
      * When functions to add new labels are added, this file can be rerun with `labelled = True` to begin with already-labelled datasets and only run the additon of desired new labels. If doing so, the pph data will be saved as `labelled_pph2.nc` (since `labelled_pph.nc` is in use). You need to manually delete `labelled_pph.nc` and then rename `labelled_pph2.nc` as labelled_pph2.nc once this file is done running.
-     * `PPH_NUM`: The maximum PPH at any one grid cell for the date
-     * `PPH_CAT`: The categorical risk associated with the maximum PPH at any one grid cell for the date (e.g. HIGH = 60)
-     * `PPH_NUM`: The maximum PPH at any one grid cell for the date
-     * `PPH_CAT`: The categorical risk associated with the maximum PPH at any one grid cell for the date (e.g. HIGH = 60)
    * Running Time: ~20 minutes to read in data. Most labels are instant to a few minutes to add, but regions takes a few hours.
 5. To be completed: downloading and incorporating ERA5 data associated with locations and dates of interest
 6. Further steps: ML analysis of all this data
