@@ -70,9 +70,11 @@ This repository contains code to analyze Convective Outlooks, Storm Reports (and
   * One code block needed to be run twice for some reason. Noted with a comment.
   * Running Time: About 20 minutes to read in data, then about 20 minutes more to plot, scaling as n^2 with number of labels
 * `explore_date.ipynb` plots the Day 3, Day 2 7z, Day 2 17z, and Day 1 outlooks, the PPH, and reports on maps, along with printing and saving to a `.txt` file all labels, for any dates requested. The results are saved in [/plots/daily/[datestring]](https://github.com/milesepstein13/severe-thunderstorm-analysis/tree/master/plots/daily)
-  * Running time: seconds per requested date
-* `clustering.ipynb` clusters all days with various methods (knn, k-means, pca?) after labelling. To Be Completed
-  * Running Time:
+  * Running time: seconds per requested date after reading datasets
+* `clustering.ipynb` clusters all days with various methods (knn, k-means, pca) after labelling. First, a mxn matrix is created, where m is the number of samples (dates of interest, in our case MDT/HIGH days since 2002) and n is the dimensionality (in our case the number of numerical or ordinal labels). This data is standardized before any PCA or clustering
+  * PCA: PCA is run on this data matrix, and the fraction of variance explained by each PC and the components of the first few PCs are printed
+  * Clustering: `cluster_partial()` clusters the dataset in only the `cluster_vars` dimensions with each clustering algorithm in `clustering_algorithms`, returning a dict (by clustering algorithms) of lists of the portions of the entire dataset in each cluster. Then, for the clusters created by each method, `summarize_clusters` plots the cluster centers on a map (with some higher-dimension information encoded in plot point characteristics), creates distribution 2d-historgams for each variable (by cluster number), and/or saves to text the centers of each cluster.
+  * Running Time: a few minutes after reading datasets
 
 ## Notes/Standards/Assumptions:
 
