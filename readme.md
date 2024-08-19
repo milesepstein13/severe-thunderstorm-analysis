@@ -24,6 +24,7 @@ This repository contains code to analyze Convective Outlooks, Storm Reports (and
 3. Run `gridize.ipynb` and `gridize2.ipynb`
 
    * This takes in the CO, PPH, and report data output by `load_data.ipynb` from `/data` and creates gridded netCDF files (usable by xarray) from outlook `.shp` and report `.csv` files. These `.nc` files are saved alongside the `.shp` and `.csv` files they were derived from. For each day: each outlook issued for that day is "gridized" by noting the implied probability of a storm occuring within 25 miles of each gridpoint, and reports are "gridized" by counting the number of storm reports within 25 miles of each gridpoint and noting whether or not any storm report occurred within 25 miles of each gridpoint.
+   * Outlooks are only gridized beginning when day 3 outlooks are issued (since prior outlooks are purely categorical), which is the time period we are ultimately working with, but be warned if attempting to use for earlier time periods.
    * Typical running time: `gridize.ipynb` (for outlooks) takes a few days to run (and can be resumed partway through if needed). `gridize2.ipynb` takes a few minutes
 4. Run `labelling.ipynb`
 
@@ -56,9 +57,12 @@ This repository contains code to analyze Convective Outlooks, Storm Reports (and
        * `BS_NUM`: the brier score for all grid points on date between the outlook probability of seeing a storm report within 25 miles of a point and whether that actually occurred.
        * `RMSE_NUM`: the RMSE between the outlook probability of seeing a storm report within 25 miles and the PPH probability
        * `NEIGH_NUM`: the MSE between outlook probability of seeing a storm report within 25 miles and the true probability, as given by the fraction of the (VARIABLE) nearest gridpoints that had a storm report within 25 miles.
-       * `POD[_H/W/T]`: (Analagous to Probability of Detection): The mean probability of any [hail/wind/tornado] hazard occurance in the Day 1 outlook across grid squares for which there was a verifying event within 25 miles
-       * `FAR[_H/W/T]`: (Analagous to False Alarm Ratio): The mean probability of any [hail/wind/tornado] hazard occurance in the Day 1 outlook across grid squares for which there was NOT a verifying event within 25 miles
-         * Note that POD and FAR are the non-squared (unless you set `squared = True`) contributions to the BS by at verifying and non-verifying grid squares respectively.
+       * `POD[_H/W/T]`: (Probability of Detection): The mean probability of any [hail/wind/tornado] hazard occurance in the Day 1 outlook across grid squares for which there was a verifying event within 25 miles
+       * `FART[_H/W/T]`: (False Alarm Rate): The mean probability of any [hail/wind/tornado] hazard occurance in the Day 1 outlook across grid squares for which there was NOT a verifying event within 25 miles
+         * Note that POD and FART are the non-squared (unless you set `squared = True`) contributions to the BS by at verifying and non-verifying grid squares respectively.
+       * `HR[_H/W/T]`: (Hit Rate): the fraction of grid squares for which any [hail/wind/tornado] hazard occurred within 25 miles, weighted by the Day 1 outlook probability.
+       * `FAR[_H/W/T]`: (False Alarm Ratio): the fraction of grid squares for which any [hail/wind/tornado] hazard occurred within 25 miles, weighted by the Day 1 outlook probability. This, not False Alarm Rate, is the (continious analog of the) industry-standard metric used to measure false alarms.
+         * Note that for any day, HR and FARATIO sum to 1
      * characterization by environmental data: to be added
      * The modified datasets are also saved in `/data`, with `labelled_` as a prefix on the filename
      * When functions to add new labels are added, this file can be rerun with `labelled = True` to begin with already-labelled datasets and only run the additon of desired new labels. If doing so, the pph data will be saved as `labelled_pph2.nc` (since `labelled_pph.nc` is in use). You need to manually delete `labelled_pph.nc` and then rename `labelled_pph2.nc` as labelled_pph2.nc once this file is done running.
