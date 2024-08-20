@@ -61,7 +61,7 @@ This repository contains code to analyze Convective Outlooks, Storm Reports (and
        * `FART[_H/W/T]`: (False Alarm Rate): The mean probability of any [hail/wind/tornado] hazard occurance in the Day 1 outlook across grid squares for which there was NOT a verifying event within 25 miles
          * Note that POD and FART are the non-squared (unless you set `squared = True`) contributions to the BS by at verifying and non-verifying grid squares respectively.
        * `HR[_H/W/T]`: (Hit Rate): the fraction of grid squares for which any [hail/wind/tornado] hazard occurred within 25 miles, weighted by the Day 1 outlook probability.
-       * `FAR[_H/W/T]`: (False Alarm Ratio): the fraction of grid squares for which any [hail/wind/tornado] hazard occurred within 25 miles, weighted by the Day 1 outlook probability. This, not False Alarm Rate, is the (continious analog of the) industry-standard metric used to measure false alarms.
+       * `FAR[_H/W/T]`: (False Alarm Ratio): the fraction of grid squares for which any [hail/wind/tornado] hazard did not within 25 miles, weighted by the Day 1 outlook probability. This, not False Alarm Rate, is the (continious analog of the) industry-standard metric used to measure false alarms.
          * Note that for any day, HR and FARATIO sum to 1
      * characterization by environmental data: to be added
      * The modified datasets are also saved in `/data`, with `labelled_` as a prefix on the filename
