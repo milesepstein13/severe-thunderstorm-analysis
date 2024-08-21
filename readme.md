@@ -62,7 +62,7 @@ This repository contains code to analyze Convective Outlooks, Storm Reports (and
          * Note that POD and FART are the non-squared (unless you set `squared = True`) contributions to the BS by at verifying and non-verifying grid squares respectively.
        * `HR[_H/W/T]`: (Hit Rate): the fraction of grid squares for which any [hail/wind/tornado] hazard occurred within 25 miles, weighted by the Day 1 outlook probability.
        * `FAR[_H/W/T]`: (False Alarm Ratio): the fraction of grid squares for which any [hail/wind/tornado] hazard did not within 25 miles, weighted by the Day 1 outlook probability. This, not False Alarm Rate, is the (continious analog of the) industry-standard metric used to measure false alarms.
-         * Note that for any day, HR and FARATIO sum to 1
+         * Note that for any day, HR and FARATIO sum to 1 (unluess there is no outlook, in which case both are set to zero)
      * characterization by environmental data: to be added
      * The modified datasets are also saved in `/data`, with `labelled_` as a prefix on the filename
      * When functions to add new labels are added, this file can be rerun with `labelled = True` to begin with already-labelled datasets and only run the additon of desired new labels. If doing so, the pph data will be saved as `labelled_pph2.nc` (since `labelled_pph.nc` is in use). You need to manually delete `labelled_pph.nc` and then rename `labelled_pph2.nc` as labelled_pph2.nc once this file is done running.
