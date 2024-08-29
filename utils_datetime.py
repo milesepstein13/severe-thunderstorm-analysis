@@ -56,7 +56,6 @@ def revert_all_datetimes(outlooks):
 
 def create_dates(datetimes, shift):
     # converts list of datetime object to list of dates (YMD)
-    # TODO: does this cause end of month issue? But only sometimes????
     for datetime, i in zip(datetimes, range(len(datetimes))):
         days = timedelta(shift)
         if i == 0:

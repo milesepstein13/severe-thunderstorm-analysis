@@ -26,7 +26,8 @@ This repository contains code to analyze Convective Outlooks, Storm Reports (and
    * This takes in the CO, PPH, and report data output by `load_data.ipynb` from `/data` and creates gridded netCDF files (usable by xarray) from outlook `.shp` and report `.csv` files. These `.nc` files are saved alongside the `.shp` and `.csv` files they were derived from. For each day: each outlook issued for that day is "gridized" by noting the implied probability of a storm occuring within 25 miles of each gridpoint, and reports are "gridized" by counting the number of storm reports within 25 miles of each gridpoint and noting whether or not any storm report occurred within 25 miles of each gridpoint.
    * Outlooks are only gridized beginning when day 3 outlooks are issued (since prior outlooks are purely categorical), which is the time period we are ultimately working with, but be warned if attempting to use for earlier time periods.
    * Typical running time: `gridize.ipynb` (for outlooks) takes a few days to run (and can be resumed partway through if needed). `gridize2.ipynb` takes a few minutes
-4. Run `labelling.ipynb`
+4. Run `track_displacement.ipynb` [DESCRIBE HERE]
+5. Run `labelling.ipynb`
 
    * This reads in the CO, PPH, and report data output by `load_data.ipynb` from `/data` and adds the following variables (each date is associated with one value for each of these variables):
 
@@ -67,8 +68,8 @@ This repository contains code to analyze Convective Outlooks, Storm Reports (and
      * The modified datasets are also saved in `/data`, with `labelled_` as a prefix on the filename
      * When functions to add new labels are added, this file can be rerun with `labelled = True` to begin with already-labelled datasets and only run the additon of desired new labels. If doing so, the pph data will be saved as `labelled_pph2.nc` (since `labelled_pph.nc` is in use). You need to manually delete `labelled_pph.nc` and then rename `labelled_pph2.nc` as labelled_pph2.nc once this file is done running.
    * Running Time: ~20 minutes to read in data. Most labels are instant to a few minutes to add, but regions takes a few hours.
-5. To be completed: downloading and incorporating ERA5 data associated with locations and dates of interest
-6. Further steps: ML analysis of all this data
+6. To be completed: downloading and incorporating ERA5 data associated with locations and dates of interest
+7. Further steps: ML analysis of all this data
 
 ## Offshoots/Products:
 
