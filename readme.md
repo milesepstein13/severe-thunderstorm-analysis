@@ -26,7 +26,18 @@ This repository contains code to analyze Convective Outlooks, Storm Reports (and
    * This takes in the CO, PPH, and report data output by `load_data.ipynb` from `/data` and creates gridded netCDF files (usable by xarray) from outlook `.shp` and report `.csv` files. These `.nc` files are saved alongside the `.shp` and `.csv` files they were derived from. For each day: each outlook issued for that day is "gridized" by noting the implied probability of a storm occuring within 25 miles of each gridpoint, and reports are "gridized" by counting the number of storm reports within 25 miles of each gridpoint and noting whether or not any storm report occurred within 25 miles of each gridpoint.
    * Outlooks are only gridized beginning when day 3 outlooks are issued (since prior outlooks are purely categorical), which is the time period we are ultimately working with, but be warned if attempting to use for earlier time periods.
    * Typical running time: `gridize.ipynb` (for outlooks) takes a few days to run (and can be resumed partway through if needed). `gridize2.ipynb` takes a few minutes
-4. Run `track_displacement.ipynb` [DESCRIBE HERE]
+4. Run `track_displacement.ipynb`
+
+   * This file uses the Farneback optical flow algorithm to find the spatial shift between outlooks and pph. The algorithm, originally used to track the movement of an object from one frame of a video to the next, produces a vector at each gridpoint (pixel) representing object motion. These vectors capture the displacement and deformation of an object (or in our case, storm probabilities). Some key interpretations are that vectors point a direction if storms generally occured that direction from where they were forecast, vectors are near zero where no storms were forecast or reported, and vectors diverge where storms are underforecast (and converge where overforecast). These vector fields are saved in `/data/displacement/displacements.nc`
+   * These fields are calculated for all-hazard probabilities and each hazard-specific probability. For each day/hazard type, the following values are recorded at each gridpoint:
+     * `x/y_flow`: The displacement, in along-grid directions and units of grid squares
+     * `end_lon/lat`: The endpoint of the displacement vector in lat/lon coordinates, useful for plotting displacements with plt.arrow()
+     * `e/n_flow`: The displacement, in cardinal directions with units of m
+   * Additionally, average spatial shifts and divergences are calculated (for all hazards, Hail, Wind, and Tornadoes):
+     * `E_SH[_H/W/T]` (East Shift): Average e_flow across all gridpoints, weighted by outlook probability (or PPH probability if outlook is zero).
+     * `N_SH[_H/W/T]` (North Shift): Average n_flow is taken across all gridpoints, weighted by outlook probability (or PPH probability if outlook is zero).
+     * `DIV[_H/W/T]` (Divergence): Average divergence in the x/y_flow field across all gridpoints, weighted by outlook probability (or PPH probability if outlook is zero).
+   * Typical running time: about a day
 5. Run `labelling.ipynb`
 
    * This reads in the CO, PPH, and report data output by `load_data.ipynb` from `/data` and adds the following variables (each date is associated with one value for each of these variables):
@@ -58,12 +69,15 @@ This repository contains code to analyze Convective Outlooks, Storm Reports (and
        * `BS_NUM`: the brier score for all grid points on date between the outlook probability of seeing a storm report within 25 miles of a point and whether that actually occurred.
        * `RMSE_NUM`: the RMSE between the outlook probability of seeing a storm report within 25 miles and the PPH probability
        * `NEIGH_NUM`: the MSE between outlook probability of seeing a storm report within 25 miles and the true probability, as given by the fraction of the (VARIABLE) nearest gridpoints that had a storm report within 25 miles.
-       * `POD[_H/W/T]`: (Probability of Detection): The mean probability of any [hail/wind/tornado] hazard occurance in the Day 1 outlook across grid squares for which there was a verifying event within 25 miles
-       * `FART[_H/W/T]`: (False Alarm Rate): The mean probability of any [hail/wind/tornado] hazard occurance in the Day 1 outlook across grid squares for which there was NOT a verifying event within 25 miles
+       * `POD[_H/W/T]` (Probability of Detection): The mean probability of any [hail/wind/tornado] hazard occurance in the Day 1 outlook across grid squares for which there was a verifying event within 25 miles
+       * `FART[_H/W/T]` (False Alarm Rate): The mean probability of any [hail/wind/tornado] hazard occurance in the Day 1 outlook across grid squares for which there was NOT a verifying event within 25 miles
          * Note that POD and FART are the non-squared (unless you set `squared = True`) contributions to the BS by at verifying and non-verifying grid squares respectively.
-       * `HR[_H/W/T]`: (Hit Rate): the fraction of grid squares for which any [hail/wind/tornado] hazard occurred within 25 miles, weighted by the Day 1 outlook probability.
-       * `FAR[_H/W/T]`: (False Alarm Ratio): the fraction of grid squares for which any [hail/wind/tornado] hazard did not within 25 miles, weighted by the Day 1 outlook probability. This, not False Alarm Rate, is the (continious analog of the) industry-standard metric used to measure false alarms.
+       * `HR[_H/W/T]` (Hit Rate): the fraction of grid squares for which any [hail/wind/tornado] hazard occurred within 25 miles, weighted by the Day 1 outlook probability.
+       * `FAR[_H/W/T]` (False Alarm Ratio): the fraction of grid squares for which any [hail/wind/tornado] hazard did not within 25 miles, weighted by the Day 1 outlook probability. This, not False Alarm Rate, is the (continious analog of the) industry-standard metric used to measure false alarms.
          * Note that for any day, HR and FARATIO sum to 1 (unluess there is no outlook, in which case both are set to zero)
+       * `E_SH[_H/W/T]` (East Shift): Average eastward (negative is westward) shift from all-hazard [hail/wind/tornado] outlooks to pph using Farneback optical flow (m). Average is taken across all gridpoints, weighted by outlook probability (or PPH probability if outlook is zero).
+       * `N_SH[_H/W/T]` (North Shift): Average northward (negative is southward) shift from all-hazard [hail/wind/tornado] outlooks to pph using Farneback optical flow (m). Average is taken across all gridpoints, weighted by outlook probability (or PPH probability if outlook is zero).
+       * `DIV[_H/W/T]` (Divergence): Average divergence in the flow field of all-hazard [hail/wind/tornado] outlooks to pph using Farneback optical flow. Average is taken across all gridpoints, weighted by outlook probability (or PPH probability if outlook is zero).
      * characterization by environmental data: to be added
      * The modified datasets are also saved in `/data`, with `labelled_` as a prefix on the filename
      * When functions to add new labels are added, this file can be rerun with `labelled = True` to begin with already-labelled datasets and only run the additon of desired new labels. If doing so, the pph data will be saved as `labelled_pph2.nc` (since `labelled_pph.nc` is in use). You need to manually delete `labelled_pph.nc` and then rename `labelled_pph2.nc` as labelled_pph2.nc once this file is done running.
@@ -97,3 +111,4 @@ This repository contains code to analyze Convective Outlooks, Storm Reports (and
   * Day 3 forecasts first issued '200203300000'
   * Day 2 7z forecasts first issued '199707100000'
   * Day 2 17z forecasts first issued '199504040000'
+* All gridded datasets are on the NCEP-211 grid. (LINK)
