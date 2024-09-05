@@ -111,4 +111,5 @@ This repository contains code to analyze Convective Outlooks, Storm Reports (and
   * Day 3 forecasts first issued '200203300000'
   * Day 2 7z forecasts first issued '199707100000'
   * Day 2 17z forecasts first issued '199504040000'
-* All gridded datasets are on the NCEP-211 grid. (LINK)
+* All gridded datasets are on the same grid as used in PPH datasets, which is stated to be the [NCEP 211 Grid](https://www.nco.ncep.noaa.gov/pmb/docs/on388/tableb.html#GRID211), although I have difficulty exactly recreating this grid and have only used the grid directly from the PPH datasets.
+* Marine hail/wind and waterspouts are not included.
