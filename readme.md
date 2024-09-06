@@ -87,6 +87,7 @@ This repository contains code to analyze Convective Outlooks, Storm Reports (and
 
 ## Offshoots/Products:
 
+* Especially interesting figures are copied into `/plots/results`
 * `mcax.ipynb` does MCA analysis between gridded PPH and day-1 outlooks for each of the three hazard types
 * `explore_subsets.ipynb` produces 1D histograms for each label and 2D historgrams for each pair of labels (as created in `labelling.ipynb`). This is done for all dates (with concurrent outlook, PPH, and report data; 1987-2022), dates with `MAX_CAT` of MDT or HIGH, dates since MRGL and ENH were added as categorical risks, and dates with `MAX_CAT` of MDT or HIGH since MRGL and ENH were added as categorical risks. Plots are saved in [/plots/label_distributions](https://github.com/milesepstein13/severe-thunderstorm-analysis/tree/master/plots/label_distributions).
   * Also can create a timeseries of any numerical label if desired.
