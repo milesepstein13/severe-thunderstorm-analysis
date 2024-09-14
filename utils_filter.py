@@ -42,9 +42,12 @@ def read_datasets(data_location, mod_string = 'all'):
         print('reading outlooks')
         outlooks = gp.read_file(data_location + '/outlooks/' + mod_string + '_outlooks.shp')
 
+    print('reading pph')
+    pph = xr.open_dataset(data_location + '/pph/' + mod_string + '_pph.nc')
+
     print('reading storm reports')
     reports = gp.read_file(data_location + '/storm_reports/' + mod_string + '_reports.csv')
-    return outlooks, reports
+    return outlooks, pph, reports
 
 
 def select_days_outlooks(outlooks, dates):
