@@ -27,6 +27,19 @@ This repository contains code to analyze Convective Outlooks, Storm Reports (and
    * Outlooks are only gridized beginning when day 3 outlooks are issued (since prior outlooks are purely categorical), which is the time period we are ultimately working with, but be warned if attempting to use for earlier time periods.
    * Typical running time: `gridize.ipynb` (for outlooks) takes a few days to run (and can be resumed partway through if needed). `gridize2.ipynb` takes a few minutes
 4. Run `create_contingency.ipynb`
+
+   This file creates the probabilistic contingency tables between probabilistic convective outlooks and pph. At each grid point, a, b, c, and d can be calculated from the forecast probability and PPH probability:
+
+   |                                  | Observed Outcome | (PPH probability v) |
+   | -------------------------------- | ---------------- | ------------------- |
+   | Forecast (Outlook Probability p) | Yes (v)          | No (1-v)            |
+   | Yes (p)                          | a = p * v        | b = p * (1-v)       |
+   | No (1-p)                         | c = (1-p) * v    | d = (1-p) * (1-v)   |
+
+   The values of a, b, c, and d are summed across all gridpoints for each date and hazard type (wind, hail, tornado, and all-hazard). That is, for each hazard type on each date, there is one total value for a representing the (expected) number of positive forecasts/positive outcomes, one total value b representing the (expected) number of positive forecasts/negative outcomes, etc. These values a, b, c, and d are saved to `data/contingency/contingency.nc`
+
+
+   * Typicall running time: a few minutes
 5. Run `track_displacement.ipynb`
 
    * This file uses the Farneback optical flow algorithm to find the spatial shift between outlooks and pph. The algorithm, originally used to track the movement of an object from one frame of a video to the next, produces a vector at each gridpoint (pixel) representing object motion. These vectors capture the displacement and deformation of an object (or in our case, storm probabilities). Some key interpretations are that vectors point a direction if storms generally occured that direction from where they were forecast, vectors are near zero where no storms were forecast or reported, and vectors diverge where storms are underforecast (and converge where overforecast). These vector fields are saved in `/data/displacement/displacements.nc`
@@ -71,15 +84,28 @@ This repository contains code to analyze Convective Outlooks, Storm Reports (and
          * `BS_NUM`: the brier score for all grid points on date between the outlook probability of seeing a storm report within 25 miles of a point and whether that actually occurred.
          * `RMSE_NUM`: the RMSE between the outlook probability of seeing a storm report within 25 miles and the PPH probability
          * `NEIGH_NUM`: the MSE between outlook probability of seeing a storm report within 25 miles and the true probability, as given by the fraction of the 5x5 nearest gridpoints that had a storm report within 25 miles.
-       * Metrics Using Probabilistic Contingency Tables
-         * `POD[_H/W/T]` (Probability of Detection): The mean probability of any [hail/wind/tornado] hazard occurance in the Day 1 outlook across grid squares for which there was a verifying event within 25 miles
-         * `FART[_H/W/T]` (False Alarm Rate): The mean probability of any [hail/wind/tornado] hazard occurance in the Day 1 outlook across grid squares for which there was NOT a verifying event within 25 miles
-           * Note that POD and FART are the non-squared (unless you set `squared = True`) contributions to the BS by at verifying and non-verifying grid squares respectively.
-         * Note that POD and FART are the non-squared (unless you set `squared = True`) contributions to the BS by at verifying and non-verifying grid squares respectively.
-         * `HR[_H/W/T]` (Hit Rate): the fraction of grid squares for which any [hail/wind/tornado] hazard occurred within 25 miles, weighted by the Day 1 outlook probability.
-         * `FAR[_H/W/T]` (False Alarm Ratio): the fraction of grid squares for which any [hail/wind/tornado] hazard did not within 25 miles, weighted by the Day 1 outlook probability. This, not False Alarm Rate, is the (continious analog of the) industry-standard metric used to measure false alarms.
-           * Note that for any day, HR and FARATIO sum to 1 (unluess there is no outlook, in which case both are set to zero)
-         * Note that for any day, HR and FARATIO sum to 1 (unluess there is no outlook, in which case both are set to zero)
+       * Metrics Using Probabilistic Contingency Tables: As described in create_contingency.ipynb, the (expected) contingency table values a, b, c, and d are calculated for each day/hazard type. From these values, the following statistics are calculated: `_H/W/T` represents hazard type, all followed by `_NUM`
+         * `PC` (Percent Correct): (a + d) / (a + b + c + d)
+         * `POD `(Probability of Detection): a / (a + c)
+           * The expected mean probability of any [hail/wind/tornado] hazard occurance in the Day 1 outlook across grid squares for which there was a verifying event within 25 miles
+           * = 1 - FOM (Frequency of Misses)
+         * `FAR` (False Alarm Ratio): b / (a + b)
+           * The expected fraction of grid squares for which any [hail/wind/tornado] hazard did not occur within 25 miles, weighted by the Day 1 outlook probability.
+           * = 1 - FOH (Frequency of Hits)
+         * `POFD` (Probability of False Detection): b / (b + d)
+           * The expected mean probability of any [hail/wind/tornado] hazard occurance in the Day 1 outlook across grid squares for which there was NOT a verifying event within 25 miles
+           * Note that FOM and POFD are the non-squared (unless you set `squared = True`) contributions to the BS by at verifying and non-verifying grid squares respectively.
+           * = 1 - PCF (Percent Correct Rejections)
+         * `DFR` (Detection Failure Ratio): c / (c + d)
+           * The expected mean PPH probability where no storms were forecast.
+           * = 1 - FOCN (Frequency of Correct Null Forecasts)
+         * `CSI` (Critical Success Index): a / (a + b + c)
+           * Ranges from zero to 1, where 1 is best performance
+         * `Bias`: (a + b) / (a + c)
+           * Whether storms were underforecast (<1) or overforecast (>1)
+         * `ETS` (Equitable Threat Score): (a - Bias/n) / (a + b + c - Bias/n)
+           * Like CSI, accounting for bias
+         * `TSS` (True Skill Score): (ad - bc) / ((a + c)(b + d))
        * Metrics using optical flow displacement vectors (only 2002- for H and W):
          * `E_SH[_H/W/T]` (East Shift): Average eastward (negative is westward) shift from all-hazard [hail/wind/tornado] outlooks to pph using Farneback optical flow (m). Average is taken across all gridpoints, weighted by outlook probability (or PPH probability if outlook is zero).
          * `N_SH[_H/W/T]` (North Shift): Average northward (negative is southward) shift from all-hazard [hail/wind/tornado] outlooks to pph using Farneback optical flow (m). Average is taken across all gridpoints, weighted by outlook probability (or PPH probability if outlook is zero).
@@ -87,7 +113,7 @@ This repository contains code to analyze Convective Outlooks, Storm Reports (and
      * characterization by environmental data: to be added
      * The modified datasets are also saved in `/data`, with `labelled_` as a prefix on the filename
      * When functions to add new labels are added, this file can be rerun with `labelled = True` to begin with already-labelled datasets and only run the additon of desired new labels. If doing so, the pph data will be saved as `labelled_pph2.nc` (since `labelled_pph.nc` is in use). You need to manually delete `labelled_pph.nc` and then rename `labelled_pph2.nc` as labelled_pph2.nc once this file is done running.
-   * Running Time: ~20 minutes to read in data. Most labels are instant to a few minutes to add, but regions takes a few hours.
+   * Running Time: ~20 minutes to read in data. Most labels are instant to ~10 minutes to add, but regions takes a few hours.
 7. To be completed: downloading and incorporating ERA5 data associated with locations and dates of interest
 8. Further steps: ML analysis of all this data
 
