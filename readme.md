@@ -122,13 +122,14 @@ This repository contains code to analyze Convective Outlooks, Storm Reports (and
 * Especially interesting figures are copied into `/plots/results`
 * `mcax.ipynb` does MCA analysis between gridded PPH and day-1 outlooks for each of the three hazard types
 * `explore_subsets.ipynb` produces 1D histograms for each label and 2D historgrams for each pair of labels (as created in `labelling.ipynb`). This is done for all dates (with concurrent outlook, PPH, and report data; 1987-2022), dates with `MAX_CAT` of MDT or HIGH, dates since MRGL and ENH were added as categorical risks, and dates with `MAX_CAT` of MDT or HIGH since MRGL and ENH were added as categorical risks. Plots are saved in [/plots/label_distributions](https://github.com/milesepstein13/severe-thunderstorm-analysis/tree/master/plots/label_distributions).
-  * Also can create a timeseries of any numerical label if desired.
-  * Also creates displacement plots [DESCRIBE]
-  * Running Time: About 20 minutes to read in data, then about 20 minutes more to plot, scaling as n^2 with number of labels
+  * Also can create a timeseries of any numerical labels desired (`plot_timeseries_2` to plot two variables (with different axes) and `plot_timeseries_n` to plot an arbitrary number of variables on the same axis)
+  * Also creates a histogram of any numerical variable, stacked by any categorical variable (stacked_histogram)
+  * Running Time: about 20 minutes more to plot 2d histograms, scaling as n^2 with number of labels
 * `explore_date.ipynb` plots the Day 3, Day 2 7z, Day 2 17z, and Day 1 outlooks, the PPH, and reports on maps, along with printing and saving to a `.txt` file all labels, for any dates requested. The results are saved in [/plots/daily/[datestring]](https://github.com/milesepstein13/severe-thunderstorm-analysis/tree/master/plots/daily)
-  * Running time: seconds per requested date after reading datasets
-* `create_performance_diagrams.ipynb` adsfa
-  * [DESCRIBE]
+  * Running time: about 30 minutes to read datasets, then 5-10 min per requested date after reading datasets
+* `create_performance_diagrams.ipynb`
+  * Can create any requested performance diagram
+  * Running time: seconds
 * `clustering.ipynb` clusters all days with various methods (knn, k-means, pca) after labelling. First, a mxn matrix is created, where m is the number of samples (dates of interest, in our case MDT/HIGH days since 2002) and n is the dimensionality (in our case the number of numerical or ordinal labels). This data is standardized before any PCA or clustering
   * PCA: PCA is run on this data matrix, and the fraction of variance explained by each PC and the components of the first few PCs are printed
   * Clustering: `cluster_partial()` clusters the dataset in only the `cluster_vars` dimensions with each clustering algorithm in `clustering_algorithms`, returning a dict (by clustering algorithms) of lists of the portions of the entire dataset in each cluster. Then, for the clusters created by each method, `summarize_clusters` plots the cluster centers on a map (with some higher-dimension information encoded in plot point characteristics), creates distribution 2d-historgams for each variable (by cluster number), and/or saves to text the centers of each cluster. Plots can be shown in console or saved in `/plots/clustering/... `
