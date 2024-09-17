@@ -39,7 +39,7 @@ This repository contains code to analyze Convective Outlooks, Storm Reports (and
    The values of a, b, c, and d are summed across all gridpoints for each date and hazard type (wind, hail, tornado, and all-hazard). That is, for each hazard type on each date, there is one total value for a representing the (expected) number of positive forecasts/positive outcomes, one total value b representing the (expected) number of positive forecasts/negative outcomes, etc. These values a, b, c, and d are saved to `data/contingency/contingency.nc`
 
 
-   * Typicall running time: a few minutes
+   * Typical running time: a few minutes
 5. Run `track_displacement.ipynb`
 
    * This file uses the Farneback optical flow algorithm to find the spatial shift between outlooks and pph. The algorithm, originally used to track the movement of an object from one frame of a video to the next, produces a vector at each gridpoint (pixel) representing object motion. These vectors capture the displacement and deformation of an object (or in our case, storm probabilities). Some key interpretations are that vectors point a direction if storms generally occured that direction from where they were forecast, vectors are near zero where no storms were forecast or reported, and vectors diverge where storms are underforecast (and converge where overforecast). These vector fields are saved in `/data/displacement/displacements.nc`
@@ -52,7 +52,7 @@ This repository contains code to analyze Convective Outlooks, Storm Reports (and
      * `N_SH[_H/W/T]` (North Shift): Average n_flow is taken across all gridpoints, weighted by outlook probability (or PPH probability if outlook is zero).
      * `DIV[_H/W/T]` (Divergence): Average divergence in the x/y_flow field across all gridpoints, weighted by outlook probability (or PPH probability if outlook is zero).
    * Typical running time: about a day
-6. Run `labelling.ipynb`
+6. Run `labelling.ipynb` (parts that do not rely on the datasets created in steps 3-5 can be run before/without those steps)
 
    * This reads in the CO, PPH, and report data output by `load_data.ipynb` from `/data` and adds the following variables (each date is associated with one value for each of these variables):
 
