@@ -86,7 +86,7 @@ This repository contains code to analyze Convective Outlooks, Storm Reports (and
          * `NEIGH_NUM`: the MSE between outlook probability of seeing a storm report within 25 miles and the true probability, as given by the fraction of the 5x5 nearest gridpoints that had a storm report within 25 miles.
        * Metrics Using Probabilistic Contingency Tables: As described in create_contingency.ipynb, the (expected) contingency table values a, b, c, and d are calculated for each day/hazard type. From these values, the following statistics are calculated: `_H/W/T` represents hazard type, all followed by `_NUM`
          * `PC` (Percent Correct): (a + d) / (a + b + c + d)
-         * `POD `(Probability of Detection): a / (a + c)
+         * `POD` (Probability of Detection): a / (a + c)
            * The expected mean probability of any [hail/wind/tornado] hazard occurance in the Day 1 outlook across grid squares for which there was a verifying event within 25 miles
            * = 1 - FOM (Frequency of Misses)
          * `FAR` (False Alarm Ratio): b / (a + b)
@@ -94,7 +94,7 @@ This repository contains code to analyze Convective Outlooks, Storm Reports (and
            * = 1 - FOH (Frequency of Hits)
          * `POFD` (Probability of False Detection): b / (b + d)
            * The expected mean probability of any [hail/wind/tornado] hazard occurance in the Day 1 outlook across grid squares for which there was NOT a verifying event within 25 miles
-           * Note that FOM and POFD are the non-squared (unless you set `squared = True`) contributions to the BS by at verifying and non-verifying grid squares respectively.
+           * Note that FOM and POFD are the non-squared contributions to the BS by at verifying and non-verifying grid squares respectively.
            * = 1 - PCF (Percent Correct Rejections)
          * `DFR` (Detection Failure Ratio): c / (c + d)
            * The expected mean PPH probability where no storms were forecast.
@@ -124,6 +124,7 @@ This repository contains code to analyze Convective Outlooks, Storm Reports (and
 * `explore_subsets.ipynb` produces 1D histograms for each label and 2D historgrams for each pair of labels (as created in `labelling.ipynb`). This is done for all dates (with concurrent outlook, PPH, and report data; 1987-2022), dates with `MAX_CAT` of MDT or HIGH, dates since MRGL and ENH were added as categorical risks, and dates with `MAX_CAT` of MDT or HIGH since MRGL and ENH were added as categorical risks. Plots are saved in [/plots/label_distributions](https://github.com/milesepstein13/severe-thunderstorm-analysis/tree/master/plots/label_distributions).
   * Also can create a timeseries of any numerical labels desired (`plot_timeseries_2` to plot two variables (with different axes) and `plot_timeseries_n` to plot an arbitrary number of variables on the same axis)
   * Also creates a histogram of any numerical variable, stacked by any categorical variable (stacked_histogram)
+  * Also identifies days that appear to have missing outlooks
   * Running Time: about 20 minutes more to plot 2d histograms, scaling as n^2 with number of labels
 * `explore_date.ipynb` plots the Day 3, Day 2 7z, Day 2 17z, and Day 1 outlooks, the PPH, and reports on maps, along with printing and saving to a `.txt` file all labels, for any dates requested. The results are saved in [/plots/daily/[datestring]](https://github.com/milesepstein13/severe-thunderstorm-analysis/tree/master/plots/daily)
   * Running time: about 30 minutes to read datasets, then 5-10 min per requested date after reading datasets
