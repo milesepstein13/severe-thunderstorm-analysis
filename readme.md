@@ -143,7 +143,7 @@ This repository contains code to analyze Convective Outlooks, Storm Reports (and
     * `mod_string = 'all'`  loads post-`load_data.ipynb`
     * `mod_string = 'labelled'` loads post-`labelling.ipynb`
 * We only consider the Day 3 outlook (08z), both Day 2 outlooks (07z and 17z), and the first (06z) Day 1 outlook. Later Day 1 outlooks are not considered because these forecasts are issued after the beginning of the full verification period.
-* We only consider the categorical (as opposed to hazard-specific) outlooks. Numerical probabilities for any hazard are available directly on Days 3 and 2 (pre- 02/01/2020), but must be constructed from hazard-specific probabilities on Day 1 and pre-02/01/2020 Day 2 by taking the max of any hazard-specific probability at each gridpoint.
+* We only consider the categorical (as opposed to hazard-specific) outlooks. Numerical probabilities for all-hazard are available directly on Days 3 and 2 (pre- 02/01/2020), but must be constructed from hazard-specific probabilities on Day 1 and post-02/01/2020 Day 2 by taking the max of any hazard-specific probability at each gridpoint.
 * Dates when forecast practices changed:
   * MRGL and ENH were added as categorical risks: October 23, 2014
   * Day 3 forecasts first issued '200203300000'
