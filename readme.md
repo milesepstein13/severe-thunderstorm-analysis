@@ -4,8 +4,8 @@ This repository contains code to analyze Convective Outlooks, Storm Reports (and
 
 1. Download the following data into the `/raw_data` folder:
 
-   * All six (hail, wind, and tornado, each with overall and sig datasets) PPH datasets from: [https://atlas.niu.edu/pperfect/BAMS/]() into `/raw_data/pph`
-     * 1979-2022 PPH data has been used, newer data may be available
+   * All eight (hail, wind, tornado, and total each with overall and sig datasets) PPH datasets from: [https://atlas.niu.edu/pperfect/BAMS/]() into `/raw_data/pph`
+     * 1979-2023 PPH data has been used, newer data may be available
    * Each year's storm report data from: [https://www.ncdc.noaa.gov/stormevents/ftp.jsp]() into `/raw_data/storm_reports`
      * 1950-2023 Storm Report data has been used, newer data may be available
    * Day 1-3 Convective Outlooks as 'Cake Layers' from: [https://mesonet.agron.iastate.edu/request/gis/outlooks.phtml]() into `/raw_data/outlooks`. Download size may be limited, so data may need to be downloaded in several multi-year chunks (each beginning at 00:00Z Jan 1 and ending at 23:59Z Dec 31)
