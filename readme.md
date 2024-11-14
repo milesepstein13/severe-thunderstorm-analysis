@@ -21,14 +21,20 @@ This repository contains code to analyze Convective Outlooks, Storm Reports (and
    * This script also fixes a data issue in the mesonet outlooks dataset where most day three forecasts issued on the last day of a month between 2002-2019 are mistakenly labelled (in `ISSUE` and `EXPIRE` fields) as being for the first day of that month.
    * This script also identifies all dates for which there was a MDT or HIGH convective outlook issed, and saves a Convective Outlook `.shp`, PPH `.nc`, and storm report `.csv` valid on only these dates alongside the full saved datasets in the respective folders within `/data`. These datasets are not used any futher, though (since we create a more generalized way to pull out MDT+ days)
    * Typical running time: A few minutes
-3. Run `gridize.ipynb` and `gridize2.ipynb`
+3. Run `labelling.ipynb` with labelled = False
 
-   * This takes in the CO, PPH, and report data output by `load_data.ipynb` from `/data` and creates gridded netCDF files (usable by xarray) from outlook `.shp` and report `.csv` files. These `.nc` files are saved alongside the `.shp` and `.csv` files they were derived from. For each day: each outlook issued for that day is "gridized" by noting the implied probability of a storm occuring within 25 miles of each gridpoint, and reports are "gridized" by counting the number of storm reports within 25 miles of each gridpoint and noting whether or not any storm report occurred within 25 miles of each gridpoint.
+   * Only run up to `ALWAYS RUN THROUGH HERE. THEN TO ADD MORE LABELS, RUN JUST THE LABELLING YOU WISH TO BELOW`, then run the `SAVE DATA` section. This creates `labelled_[outlooks/pph/reports]` files that are used in steps 5-6 and updated in step 7.
+   * Other sections can optionally be run before saving., so long as they do not depend on the datasets created in steps 4-6. However, there is no need to do so at this stage.
+   * For full documentation of `labelling.py`, see step 7
+   * Typical running time: loading datasets takes ~half an hour.
+4. Run `gridize.ipynb` and `gridize2.ipynb`
+
+   * This takes in the CO, PPH, and report data output by `load_data.ipynb` from `/data` and creates gridded netCDF files (usable by xarray) from outlook `.shp` and report `.csv` files. These `.nc` files are saved alongside the `.shp` and `.csv` files they were derived from (as `grid_outlooks.nc` and `grid_reports.csv` respectively). For each day: each outlook issued for that day is "gridized" by noting the implied probability of a storm occuring within 25 miles of each gridpoint, and reports are "gridized" by counting the number of storm reports within 25 miles of each gridpoint and noting whether or not any storm report occurred within 25 miles of each gridpoint.
    * Outlooks are only gridized beginning when day 3 outlooks are issued (since prior outlooks are purely categorical), which is the time period we are ultimately working with, but be warned if attempting to use for earlier time periods.
    * Typical running time: `gridize.ipynb` (for outlooks) takes a few days to run (and can be resumed partway through if needed). `gridize2.ipynb` takes a few minutes
-4. Run `create_contingency.ipynb`
+5. Run `create_contingency.ipynb`
 
-   This file creates the probabilistic contingency tables between probabilistic convective outlooks and pph. At each grid point, a, b, c, and d can be calculated from the forecast probability and PPH probability:
+   Using `labelled_pph.nc` and `grid_outlooks.nc`, this file creates the probabilistic contingency tables between probabilistic convective outlooks and pph. At each grid point, a, b, c, and d can be calculated from the forecast probability and PPH probability:
 
    |                                  | Observed Outcome | (PPH probability v) |
    | -------------------------------- | ---------------- | ------------------- |
@@ -40,9 +46,9 @@ This repository contains code to analyze Convective Outlooks, Storm Reports (and
 
 
    * Typical running time: a few minutes
-5. Run `track_displacement.ipynb`
+6. Run `track_displacement.ipynb`
 
-   * This file uses the Farneback optical flow algorithm to find the spatial shift between outlooks and pph. The algorithm, originally used to track the movement of an object from one frame of a video to the next, produces a vector at each gridpoint (pixel) representing object motion. These vectors capture the displacement and deformation of an object (or in our case, storm probabilities). Some key interpretations are that vectors point a direction if storms generally occured that direction from where they were forecast, vectors are near zero where no storms were forecast or reported, and vectors diverge where storms are underforecast (and converge where overforecast). These vector fields are saved in `/data/displacement/displacements.nc`
+   * Using `labelled_pph.nc` and `grid_outlooks.nc`, this file uses the Farneback optical flow algorithm to find the spatial shift between outlooks and pph. The algorithm, originally used to track the movement of an object from one frame of a video to the next, produces a vector at each gridpoint (pixel) representing object motion. These vectors capture the displacement and deformation of an object (or in our case, storm probabilities). Some key interpretations are that vectors point a direction if storms generally occured that direction from where they were forecast, vectors are near zero where no storms were forecast or reported, and vectors diverge where storms are underforecast (and converge where overforecast). These vector fields are saved in `/data/displacement/displacements.nc`
    * These fields are calculated for all-hazard probabilities and each hazard-specific probability. For each day/hazard type, the following values are recorded at each gridpoint:
      * `x/y_flow`: The displacement, in along-grid directions and units of grid squares
      * `end_lon/lat`: The endpoint of the displacement vector in lat/lon coordinates, useful for plotting displacements with plt.arrow()
@@ -52,9 +58,9 @@ This repository contains code to analyze Convective Outlooks, Storm Reports (and
      * `N_SH[_H/W/T]` (North Shift): Average n_flow is taken across all gridpoints, weighted by outlook probability (or PPH probability if outlook is zero).
      * `DIV[_H/W/T]` (Divergence): Average divergence in the x/y_flow field across all gridpoints, weighted by outlook probability (or PPH probability if outlook is zero).
    * Typical running time: about a day
-6. Run `labelling.ipynb` (parts that do not rely on the datasets created in steps 3-5 can be run before/without those steps)
+7. Run `labelling.ipynb` with labelled = True
 
-   * This reads in the CO, PPH, and report data output by `load_data.ipynb` from `/data` and adds the following variables (each date is associated with one value for each of these variables):
+   * This reads in the CO, PPH, and report data output by `load_data.ipynb` from `/data` (if labelled = False) or already-partially-labelled CO, PPH, and report data (if labelled = True) and adds the following variables. Each date is associated with one value for each of these variables. Re-running overwrites existing values for any variable.
 
      * `MAX_CAT`: the highest categorical risk issued valid on that date (out of `['TSTM', 'MRGL', 'SLGT', 'ENH', 'MDT', 'HIGH']`)
      * `RAMP_UP`: the maximum increase in risk levels between any two convective outlooks valid for the date (e.g., if convective outlooks are issused with SLGT, MRGL, ENH, and SLGT risk, the ramp up is `2` (MRGL to ENH))
@@ -65,20 +71,22 @@ This repository contains code to analyze Convective Outlooks, Storm Reports (and
      * `REGION_M`: As above, but where total PPH is the max of each hazard-specific PPH (i.e. assuming dependence)
      * `LAT_NUM`: the latitude at which total PPH (assuming dependence) is maximized
      * `LON_NUM`: the longitude at which total PPH (assuming dependence) is maximized
-     * `PPH_NUM`: The maximum PPH (assuming independence) at any one grid cell for the date
-     * `PPH_CAT`: The categorical risk associated with the maximum PPH (assuming independence) at any one grid cell for the date (e.g. HIGH = 60)
-     * `PPH_D_NUM`: The maximum PPH (assuming dependence) at any one grid cell for the date
+     * `PPH_NUM`: The maximum any-hazard PPH at any one grid cell for the date
+     * `PPH_CAT`: The categorical risk associated with the maximum any-hazard PPH at any one grid cell for the date (e.g. HIGH = 60)
+     * `PPH_D_NUM`: The maximum PPH (for any specific hazard; thus assuming hazard locations are completely dependent on each other) at any one grid cell for the date
      * `PPH_D_CAT`: The categorical risk associated with the maximum PPH (assuming dependence) at any one grid cell for the date (e.g. HIGH = 60)
+     * `PPH_I_NUM`: The maximum PPH (calculated assuming independence of hazards; i.e. the probability of *no* hazard is the product of probabilities of not having each hazard individually) at any one grid cell for the date
+     * `PPH_I_CAT`: The categorical risk associated with the maximum PPH (assuming independence) at any one grid cell for the date (e.g. HIGH = 60)
      * `NUM_REPORTS_NUM`: The total number of severe storm reports on the date
      * `TOR_REPORTS_NUM`: The total number of tornado reports on the date
      * `WIND_REPORTS_NUM`: The total number of severe (>= 50 kt) thunderstorm wind reports on the date
      * `HAIL_REPORTS_NUM`: The toal number of severe (>= 1 in) hail reports on the date
      * `MAX_TORNADO_RATING`: The highset (E)F rating of a tornado on the date
-     * `MAX_WIND_SPEED_NUM`: The highest severe thunderstorrm wind speed recorded on the date
+     * `MAX_WIND_SPEED_NUM`: The highest severe thunderstorm wind speed recorded on the date
      * `MAX_WIND_SPEED_CAT`: One of `'sig_severe'`, `'severe'`, or `'NONE'`; the severity of the strongest thunderstorrm wind speed recorded on the date
      * `MAX_HAIL_SIZE_NUM`: The largest hail size recorded on the date
      * `MAX_HAIL_SIZE_CAT`: One of `'sig_severe'`, `'severe'`, or `'NONE'`; the severity of the largest hail size recorded on the date
-     * Accuracy of outlook. Verification of forecasts of this type are challenging, but possible metrics are SAL, Brier score, Wavelet analysis. To do so, gridded outlook and report datasets from step 3 are opened and used, and a variety of verification metrics have been created.
+     * There are many ways to quantify the accuracy of outlook. Verification of forecasts of this type are challenging, but possible metrics are SAL, Brier score, Wavelet analysis. To do so, gridded outlook, report, contingency, and displacement datasets from steps 4-6 are opened and used, and a variety of verification metrics have been created.
 
        * Direct metrics:
          * `BS_NUM`: the brier score for all grid points on date between the outlook probability of seeing a storm report within 25 miles of a point and whether that actually occurred.
@@ -113,32 +121,32 @@ This repository contains code to analyze Convective Outlooks, Storm Reports (and
      * characterization by environmental data: to be added
      * The modified datasets are also saved in `/data`, with `labelled_` as a prefix on the filename
      * When functions to add new labels are added, this file can be rerun with `labelled = True` to begin with already-labelled datasets and only run the additon of desired new labels. If doing so, the pph data will be saved as `labelled_pph2.nc` (since `labelled_pph.nc` is in use). You need to manually delete `labelled_pph.nc` and then rename `labelled_pph2.nc` as labelled_pph2.nc once this file is done running.
-   * Running Time: ~20 minutes to read in data. Most labels are instant to ~10 minutes to add, but regions takes a few hours.
-7. To be completed: downloading and incorporating ERA5 data associated with locations and dates of interest
-8. Further steps: ML analysis of all this data
+   * Running Time: ~30 minutes to read in data. Each label takes a handful of minutes to add, so the entire file can be run on the order of a few hours. 
+8. To be completed: downloading and incorporating ERA5 data associated with locations and dates of interest
+9. Further steps: ML analysis of all this data
 
 ## Offshoots/Products:
 
-* Especially interesting figures are copied into `/plots/results`
-* `mcax.ipynb` does MCA analysis between gridded PPH and day-1 outlooks for each of the three hazard types
+* Especially interesting figures are copied or saved to into `/plots/results`
+* `mcax.ipynb` does MCA analysis between gridded PPH and day-1 outlooks for each of the three hazard types. This is an old project and does not appear expecially useful.
 * `explore_subsets.ipynb` produces 1D histograms for each label and 2D historgrams for each pair of labels (as created in `labelling.ipynb`). This is done for all dates (with concurrent outlook, PPH, and report data; 1987-2022), dates with `MAX_CAT` of MDT or HIGH, dates since MRGL and ENH were added as categorical risks, and dates with `MAX_CAT` of MDT or HIGH since MRGL and ENH were added as categorical risks. Plots are saved in [/plots/label_distributions](https://github.com/milesepstein13/severe-thunderstorm-analysis/tree/master/plots/label_distributions).
   * Also can create a timeseries of any numerical labels desired (`plot_timeseries_2` to plot two variables (with different axes) and `plot_timeseries_n` to plot an arbitrary number of variables on the same axis)
   * Also creates a histogram of any numerical variable, stacked by any categorical variable (stacked_histogram)
   * Also identifies days that appear to have missing outlooks
   * Running Time: about 20 minutes more to plot 2d histograms, scaling as n^2 with number of labels
-* `explore_date.ipynb` plots the Day 3, Day 2 7z, Day 2 17z, and Day 1 outlooks, the PPH, and reports on maps, along with printing and saving to a `.txt` file all labels, for any dates requested. The results are saved in [/plots/daily/[datestring]](https://github.com/milesepstein13/severe-thunderstorm-analysis/tree/master/plots/daily)
+* `explore_date.ipynb` plots the Day 3, Day 2 7z, Day 2 17z, and Day 1 outlooks, the PPH, reports, displacements, and a performance diagram on maps, along with printing and saving to a `.txt` file all labels, for any dates requested. The results are saved in [/plots/daily/[datestring]](https://github.com/milesepstein13/severe-thunderstorm-analysis/tree/master/plots/daily)
   * Running time: about 30 minutes to read datasets, then 5-10 min per requested date after reading datasets
 * `create_performance_diagrams.ipynb`
-  * Can create any requested performance diagram
-  * Running time: seconds
-* `clustering.ipynb` clusters all days with various methods (knn, k-means, pca) after labelling. First, a mxn matrix is created, where m is the number of samples (dates of interest, in our case MDT/HIGH days since 2002) and n is the dimensionality (in our case the number of numerical or ordinal labels). This data is standardized before any PCA or clustering
+  * Contains function that can create any requested performance diagram. This is then used to create PDs (colored by hazard type), overall and broken down by region, season, and year. Timeseries of performence diagram variables (POD, FAR, bias, CSI) are plotted with annual and seasonal running averages
+  * Running time: ~ a minute
+* `clustering.ipynb` clusters all days with various methods (knn, k-means, pca) after labelling. First, a mxn matrix is created, where m is the number of samples (dates of interest, in our case MDT/HIGH days since 2002) and n is the dimensionality (in our case the number of numerical or ordinal labels). This data is standardized before any PCA or clustering.
   * PCA: PCA is run on this data matrix, and the fraction of variance explained by each PC and the components of the first few PCs are printed
   * Clustering: `cluster_partial()` clusters the dataset in only the `cluster_vars` dimensions with each clustering algorithm in `clustering_algorithms`, returning a dict (by clustering algorithms) of lists of the portions of the entire dataset in each cluster. Then, for the clusters created by each method, `summarize_clusters` plots the cluster centers on a map (with some higher-dimension information encoded in plot point characteristics), creates distribution 2d-historgams for each variable (by cluster number), and/or saves to text the centers of each cluster. Plots can be shown in console or saved in `/plots/clustering/... `
   * Running Time: a few minutes after reading datasets
 
 ## Notes/Standards/Assumptions:
 
-* Functions are mostly modularized and availible in the `utils` files. Some especially useful functions are:
+* Some functions are modularized and availible in the `utils` files. Some especially useful functions are:
   * `read_datasets` in `utils_filters.py` reads in the outlooks, PPH, and reports datasets, use `mod_string` to read different datasets:
     * `mod_string = 'all'`  loads post-`load_data.ipynb`
     * `mod_string = 'labelled'` loads post-`labelling.ipynb`
@@ -155,4 +163,3 @@ This repository contains code to analyze Convective Outlooks, Storm Reports (and
   ```
   ['200204190000', '200204200000', '200204210000', '200204250000', '200205060000', '200205250000', '200207310000', '200208130000', '200208300000', '200211090000', '200212230000', '200302030000', '200303250000', '200304140000', '200304150000', '200304160000', '200305100000', '200306250000', '200306280000', '200307270000', '200307280000', '200309030000', '200312280000', '200404020000', '200404140000', '200405230000', '200408090000', '200410140000', '200503300000', '200506060000', '200508030000', '200701040000', '200905280000', '201105210000', '202005240000', '202106130000']
   ```
-*
