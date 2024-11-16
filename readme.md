@@ -99,7 +99,7 @@ This repository contains code to analyze Convective Outlooks, Storm Reports (and
            * = 1 - FOM (Frequency of Misses)
          * `FAR` (False Alarm Ratio): b / (a + b)
            * The expected fraction of grid squares for which any [hail/wind/tornado] hazard did not occur within 25 miles, weighted by the Day 1 outlook probability.
-           * = 1 - FOH (Frequency of Hits)
+           * = 1 - FOH (Frequency of Hits/Success Ratio SR)
          * `POFD` (Probability of False Detection): b / (b + d)
            * The expected mean probability of any [hail/wind/tornado] hazard occurance in the Day 1 outlook across grid squares for which there was NOT a verifying event within 25 miles
            * Note that FOM and POFD are the non-squared contributions to the BS by at verifying and non-verifying grid squares respectively.
@@ -121,7 +121,7 @@ This repository contains code to analyze Convective Outlooks, Storm Reports (and
      * characterization by environmental data: to be added
      * The modified datasets are also saved in `/data`, with `labelled_` as a prefix on the filename
      * When functions to add new labels are added, this file can be rerun with `labelled = True` to begin with already-labelled datasets and only run the additon of desired new labels. If doing so, the pph data will be saved as `labelled_pph2.nc` (since `labelled_pph.nc` is in use). You need to manually delete `labelled_pph.nc` and then rename `labelled_pph2.nc` as labelled_pph2.nc once this file is done running.
-   * Running Time: ~30 minutes to read in data. Each label takes a handful of minutes to add, so the entire file can be run on the order of a few hours. 
+   * Running Time: ~30 minutes to read in data. Each label takes a handful of minutes to add, so the entire file can be run on the order of a few hours.
 8. To be completed: downloading and incorporating ERA5 data associated with locations and dates of interest
 9. Further steps: ML analysis of all this data
 
@@ -129,7 +129,7 @@ This repository contains code to analyze Convective Outlooks, Storm Reports (and
 
 * Especially interesting figures are copied or saved to into `/plots/results`
 * `mcax.ipynb` does MCA analysis between gridded PPH and day-1 outlooks for each of the three hazard types. This is an old project and does not appear expecially useful.
-* `explore_subsets.ipynb` produces 1D histograms for each label and 2D historgrams for each pair of labels (as created in `labelling.ipynb`). This is done for all dates (with concurrent outlook, PPH, and report data; 1987-2022), dates with `MAX_CAT` of MDT or HIGH, dates since MRGL and ENH were added as categorical risks, and dates with `MAX_CAT` of MDT or HIGH since MRGL and ENH were added as categorical risks. Plots are saved in [/plots/label_distributions](https://github.com/milesepstein13/severe-thunderstorm-analysis/tree/master/plots/label_distributions).
+* `explore_subsets.ipynb` produces 1D histograms for each label and 2D historgrams for each pair of labels (as created in `labelling.ipynb`). This is done for all dates (with concurrent outlook, PPH, and report data; 1987-2023), dates with `MAX_CAT` of MDT or HIGH, dates since MRGL and ENH were added as categorical risks, and dates with `MAX_CAT` of MDT or HIGH since MRGL and ENH were added as categorical risks. Plots are saved in [/plots/label_distributions](https://github.com/milesepstein13/severe-thunderstorm-analysis/tree/master/plots/label_distributions).
   * Also can create a timeseries of any numerical labels desired (`plot_timeseries_2` to plot two variables (with different axes) and `plot_timeseries_n` to plot an arbitrary number of variables on the same axis)
   * Also creates a histogram of any numerical variable, stacked by any categorical variable (stacked_histogram)
   * Also identifies days that appear to have missing outlooks
