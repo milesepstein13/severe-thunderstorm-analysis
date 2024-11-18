@@ -34,13 +34,13 @@ def read_datasets(data_location, mod_string = 'all'):
 
     if mod_string == 'all':
         print('reading outlooks 1')
-        outlooks = gp.read_file(data_location + '/outlooks/' + mod_string + '_outlooks_1.shp')
+        outlooks = gp.read_file(data_location + '/outlooks/' + mod_string + '_outlooks_1.shp', engine="pyogrio")
         print('reading outlooks 2')
-        outlooks = outlooks.append(gp.read_file(data_location + '/outlooks/' + mod_string + '_outlooks_2.shp'))
+        outlooks = outlooks.append(gp.read_file(data_location + '/outlooks/' + mod_string + '_outlooks_2.shp'), engine="pyogrio")
 
     else:
         print('reading outlooks')
-        outlooks = gp.read_file(data_location + '/outlooks/' + mod_string + '_outlooks.shp')
+        outlooks = gp.read_file(data_location + '/outlooks/' + mod_string + '_outlooks.shp', engine="pyogrio")
 
     print('reading pph')
     pph = xr.open_dataset(data_location + '/pph/' + mod_string + '_pph.nc')
