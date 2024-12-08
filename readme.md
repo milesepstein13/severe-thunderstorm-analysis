@@ -58,7 +58,12 @@ This repository contains code to analyze Convective Outlooks, Storm Reports (and
      * `N_SH[_H/W/T]` (North Shift): Average n_flow is taken across all gridpoints, weighted by outlook probability (or PPH probability if outlook is zero).
      * `DIV[_H/W/T]` (Divergence): Average divergence in the x/y_flow field across all gridpoints, weighted by outlook probability (or PPH probability if outlook is zero).
    * Typical running time: about a day
-7. Run `labelling.ipynb` with labelled = True
+7. Run `displacement_colocation.ipynb`
+
+   * This takes in datasets data/pph/labelled_pph.nc, data/displacement/displacements.nc, and data/outlooks/grid_outlooks.nc and saves colocated/recentered version; that is, they are regridded such that x=0, y=0 is at the centroid of the areas of highest outlook probability rather than the SW corner of the dataset. We are aware that, all points at the same x, y are not necessarily the same distance from (0, 0) due to (0, 0) being at a different point on the projection for each date.
+   * in displacements_recentered, we add additional day-level statistics ___ analagous to E_SH and N_SH, but limited to only x/y greater than or less than 0.
+   * Typical running time:
+8. Run `labelling.ipynb` with labelled = True
 
    * This reads in the CO, PPH, and report data output by `load_data.ipynb` from `/data` (if labelled = False) or already-partially-labelled CO, PPH, and report data (if labelled = True) and adds the following variables. Each date is associated with one value for each of these variables. Re-running overwrites existing values for any variable.
 
@@ -122,8 +127,8 @@ This repository contains code to analyze Convective Outlooks, Storm Reports (and
      * The modified datasets are also saved in `/data`, with `labelled_` as a prefix on the filename
      * When functions to add new labels are added, this file can be rerun with `labelled = True` to begin with already-labelled datasets and only run the additon of desired new labels. If doing so, the pph data will be saved as `labelled_pph2.nc` (since `labelled_pph.nc` is in use). You need to manually delete `labelled_pph.nc` and then rename `labelled_pph2.nc` as labelled_pph2.nc once this file is done running.
    * Running Time: ~30 minutes to read in data. Each label takes a handful of minutes to add, so the entire file can be run on the order of a few hours.
-8. To be completed: downloading and incorporating ERA5 data associated with locations and dates of interest
-9. Further steps: ML analysis of all this data
+9. To be completed: downloading and incorporating ERA5 data associated with locations and dates of interest
+10. Further steps: ML analysis of all this data
 
 ## Offshoots/Products:
 
