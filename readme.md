@@ -62,7 +62,7 @@ This repository contains code to analyze Convective Outlooks, Storm Reports (and
 
    * This takes in datasets data/pph/labelled_pph.nc, data/displacement/displacements.nc, and data/outlooks/grid_outlooks.nc and saves colocated/recentered version; that is, they are regridded such that x=0, y=0 is at the centroid of the areas of highest outlook probability rather than the SW corner of the dataset. We are aware that, all points at the same x, y are not necessarily the same distance from (0, 0) due to (0, 0) being at a different point on the projection for each date.
    * in displacements_recentered, we add additional day-level statistics ___ analagous to E_SH and N_SH, but limited to only x/y greater than or less than 0.
-   * Typical running time:
+   * Typical running time: about 2 hours
 8. Run `labelling.ipynb` with labelled = True
 
    * This reads in the CO, PPH, and report data output by `load_data.ipynb` from `/data` (if labelled = False) or already-partially-labelled CO, PPH, and report data (if labelled = True) and adds the following variables. Each date is associated with one value for each of these variables. Re-running overwrites existing values for any variable.
