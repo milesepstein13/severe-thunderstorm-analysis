@@ -54,14 +54,14 @@ This repository contains code to analyze Convective Outlooks, Storm Reports (and
      * `end_lon/lat`: The endpoint of the displacement vector in lat/lon coordinates, useful for plotting displacements with plt.arrow()
      * `e/n_flow`: The displacement, in cardinal directions with units of m
    * Additionally, average spatial shifts and divergences are calculated (for all hazards, Hail, Wind, and Tornadoes):
-     * `E_SH[_H/W/T]` (East Shift): Average e_flow across all gridpoints, weighted by outlook probability (or PPH probability if outlook is zero).
-     * `N_SH[_H/W/T]` (North Shift): Average n_flow is taken across all gridpoints, weighted by outlook probability (or PPH probability if outlook is zero).
-     * `DIV[_H/W/T]` (Divergence): Average divergence in the x/y_flow field across all gridpoints, weighted by outlook probability (or PPH probability if outlook is zero).
+     * `e_shift` (East Shift): Average e_flow across all gridpoints, weighted by outlook probability (or PPH probability if outlook is zero).
+     * `n_shift` (North Shift): Average n_flow is taken across all gridpoints, weighted by outlook probability (or PPH probability if outlook is zero).
+     * `total_div` (Divergence): Average divergence in the x/y_flow field across all gridpoints, weighted by outlook probability (or PPH probability if outlook is zero).
    * Typical running time: about a day
 7. Run `displacement_colocation.ipynb`
 
    * This takes in datasets data/pph/labelled_pph.nc, data/displacement/displacements.nc, and data/outlooks/grid_outlooks.nc and saves colocated/recentered version; that is, they are regridded such that x=0, y=0 is at the centroid of the areas of highest outlook probability rather than the SW corner of the dataset. We are aware that, all points at the same x, y are not necessarily the same distance from (0, 0) due to (0, 0) being at a different point on the projection for each date.
-   * in displacements_recentered, we add additional day-level statistics ___ analagous to E_SH and N_SH, but limited to only x/y greater than or less than 0.
+   * in displacements_recentered, we add additional day-level statistics analagous to e_shift, n_shift, total_div but limited to only x/y greater than or less than 0 (e.g. e_shift_s is the eastward shift at points with y<0 (south of outlook center)).
    * Typical running time: about 2 hours
 8. Run `labelling.ipynb` with labelled = True
 
@@ -123,6 +123,7 @@ This repository contains code to analyze Convective Outlooks, Storm Reports (and
          * `E_SH[_H/W/T]` (East Shift): Average eastward (negative is westward) shift from all-hazard [hail/wind/tornado] outlooks to pph using Farneback optical flow (m). Average is taken across all gridpoints, weighted by outlook probability (or PPH probability if outlook is zero).
          * `N_SH[_H/W/T]` (North Shift): Average northward (negative is southward) shift from all-hazard [hail/wind/tornado] outlooks to pph using Farneback optical flow (m). Average is taken across all gridpoints, weighted by outlook probability (or PPH probability if outlook is zero).
          * `DIV[_H/W/T]` (Divergence): Average divergence in the flow field of all-hazard [hail/wind/tornado] outlooks to pph using Farneback optical flow. Average is taken across all gridpoints, weighted by outlook probability (or PPH probability if outlook is zero).
+         * `EW_S[_H/W/T]`: Average eastward shift fromall-hazard [hail/wind/tornado] outlooks to pph using Farneback optical flow (m). Average is taken across points **west** of the center of highest outlook probability. Analagous statistics with analagous label are also available with northward shift and at all points east, north, or south of center.
      * characterization by environmental data: to be added
      * The modified datasets are also saved in `/data`, with `labelled_` as a prefix on the filename
      * When functions to add new labels are added, this file can be rerun with `labelled = True` to begin with already-labelled datasets and only run the additon of desired new labels. If doing so, the pph data will be saved as `labelled_pph2.nc` (since `labelled_pph.nc` is in use). You need to manually delete `labelled_pph.nc` and then rename `labelled_pph2.nc` as labelled_pph2.nc once this file is done running.
