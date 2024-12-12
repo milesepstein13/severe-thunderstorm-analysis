@@ -123,7 +123,7 @@ This repository contains code to analyze Convective Outlooks, Storm Reports (and
          * `E_SH[_H/W/T]` (East Shift): Average eastward (negative is westward) shift from all-hazard [hail/wind/tornado] outlooks to pph using Farneback optical flow (m). Average is taken across all gridpoints, weighted by outlook probability (or PPH probability if outlook is zero).
          * `N_SH[_H/W/T]` (North Shift): Average northward (negative is southward) shift from all-hazard [hail/wind/tornado] outlooks to pph using Farneback optical flow (m). Average is taken across all gridpoints, weighted by outlook probability (or PPH probability if outlook is zero).
          * `DIV[_H/W/T]` (Divergence): Average divergence in the flow field of all-hazard [hail/wind/tornado] outlooks to pph using Farneback optical flow. Average is taken across all gridpoints, weighted by outlook probability (or PPH probability if outlook is zero).
-         * `EW_S[_H/W/T]`: Average eastward shift fromall-hazard [hail/wind/tornado] outlooks to pph using Farneback optical flow (m). Average is taken across points **west** of the center of highest outlook probability. Analagous statistics with analagous label are also available with northward shift and at all points east, north, or south of center.
+         * `EW_S[_H/W/T]`: Average eastward shift fromall-hazard [hail/wind/tornado] outlooks to pph using Farneback optical flow (m). Average is taken across points **west** of the center of highest outlook probability. Analagous statistics with analagous label are also available with northward shift and at all points east, north, or south of center. This is NOT currrently in labelled_pph.nc
      * characterization by environmental data: to be added
      * The modified datasets are also saved in `/data`, with `labelled_` as a prefix on the filename
      * When functions to add new labels are added, this file can be rerun with `labelled = True` to begin with already-labelled datasets and only run the additon of desired new labels. If doing so, the pph data will be saved as `labelled_pph2.nc` (since `labelled_pph.nc` is in use). You need to manually delete `labelled_pph.nc` and then rename `labelled_pph2.nc` as labelled_pph2.nc once this file is done running.
@@ -150,6 +150,7 @@ This repository contains code to analyze Convective Outlooks, Storm Reports (and
   * PCA: PCA is run on this data matrix, and the fraction of variance explained by each PC and the components of the first few PCs are printed
   * Clustering: `cluster_partial()` clusters the dataset in only the `cluster_vars` dimensions with each clustering algorithm in `clustering_algorithms`, returning a dict (by clustering algorithms) of lists of the portions of the entire dataset in each cluster. Then, for the clusters created by each method, `summarize_clusters` plots the cluster centers on a map (with some higher-dimension information encoded in plot point characteristics), creates distribution 2d-historgams for each variable (by cluster number), and/or saves to text the centers of each cluster. Plots can be shown in console or saved in `/plots/clustering/... `
   * Running Time: a few minutes after reading datasets
+* `displacement_colocation.ipynb` also plots composites of displacement fields and pph-outlook in `plots/results/colocated`
 
 ## Notes/Standards/Assumptions:
 
