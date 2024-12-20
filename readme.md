@@ -23,9 +23,9 @@ This repository contains code to analyze Convective Outlooks, Storm Reports (and
    * Typical running time: A few minutes
 3. Run `labelling.ipynb` with labelled = False
 
-   * Only run up to `ALWAYS RUN THROUGH HERE. THEN TO ADD MORE LABELS, RUN JUST THE LABELLING YOU WISH TO BELOW`, then run the `SAVE DATA` section. This creates `labelled_[outlooks/pph/reports]` files that are used in steps 5-6 and updated in step 7.
+   * Only run up to `ALWAYS RUN THROUGH HERE. THEN TO ADD MORE LABELS, RUN JUST THE LABELLING YOU WISH TO BELOW`, then run the `SAVE DATA` section. This creates `labelled_[outlooks/pph/reports]` files that are used in steps 5-6 and updated in step 8.
    * Other sections can optionally be run before saving., so long as they do not depend on the datasets created in steps 4-6. However, there is no need to do so at this stage.
-   * For full documentation of `labelling.py`, see step 7
+   * For full documentation of `labelling.py`, see step 8.
    * Typical running time: loading datasets takes ~half an hour.
 4. Run `gridize.ipynb` and `gridize2.ipynb`
 
