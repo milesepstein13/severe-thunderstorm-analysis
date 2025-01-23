@@ -7,12 +7,24 @@ import matplotlib.pyplot as plt
 import cartopy.crs as ccrs
 import cartopy.feature as cfeature
 
-def request_era5_day(client, area, single_variable, pressure_variable, pressure_level, datestring, times, save_location):
+def request_era5_day(c, area, single_variable, pressure_variable, pressure_level, datestring, times, save_location):
     
+    print({
+                'product_type': 'reanalysis',
+                'format': 'netcdf',
+                'area': area,
+                'variable': single_variable,
+                'year': datestring[0:4],
+                'month': datestring[4:6],
+                'day': datestring[6:8],
+                'time': times,
+            })
+
     # download single level
     if single_variable != []:
         print('Requesting Single Level')
-        client.retrieve(
+        print(c)
+        c.retrieve(
             'reanalysis-era5-single-levels',
             {
                 'product_type': 'reanalysis',
@@ -29,7 +41,7 @@ def request_era5_day(client, area, single_variable, pressure_variable, pressure_
     # download pressure levels
     if pressure_variable != []:
         print('Requesting Pressure Levels')
-        client.retrieve(
+        c.retrieve(
             'reanalysis-era5-pressure-levels',
             {
                 'product_type': 'reanalysis',
