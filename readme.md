@@ -42,10 +42,10 @@ This repository contains code to analyze Convective Outlooks, Storm Reports (and
    | Yes (p)                          | a = p * v        | b = p * (1-v)       |
    | No (1-p)                         | c = (1-p) * v    | d = (1-p) * (1-v)   |
 
-   The values of a, b, c, and d are summed across all gridpoints for each date and hazard type (wind, hail, tornado, and all-hazard). That is, for each hazard type on each date, there is one total value for a representing the (expected) number of positive forecasts/positive outcomes, one total value b representing the (expected) number of positive forecasts/negative outcomes, etc. These values a, b, c, and d are saved to `data/contingency/contingency.nc`
+   The values of a, b, c, and d are summed across all gridpoints for each date and hazard type (wind, hail, tornado, and all-hazard). That is, for each hazard type on each date, there is one total value for a representing the (expected) number of positive forecasts/positive outcomes, one total value b representing the (expected) number of positive forecasts/negative outcomes, etc. These values a, b, c, and d are saved to `data/contingency/contingency.nc`. Additionally, `data/contingency/contingency_regions.nc` contains these values for only points in each region and the CONUS.
 
 
-   * Typical running time: a few minutes
+   * Typical running time: ~1 hour, mostly for creating region mask and summing a, b, c, and d
 6. Run `track_displacement.ipynb`
 
    * Using `labelled_pph.nc` and `grid_outlooks.nc`, this file uses the Farneback optical flow algorithm to find the spatial shift between outlooks and pph. The algorithm, originally used to track the movement of an object from one frame of a video to the next, produces a vector at each gridpoint (pixel) representing object motion. These vectors capture the displacement and deformation of an object (or in our case, storm probabilities). Some key interpretations are that vectors point a direction if storms generally occured that direction from where they were forecast, vectors are near zero where no storms were forecast or reported, and vectors diverge where storms are underforecast (and converge where overforecast). These vector fields are saved in `/data/displacement/displacements.nc`
