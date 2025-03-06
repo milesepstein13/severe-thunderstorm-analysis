@@ -62,7 +62,7 @@ This repository contains code to analyze Convective Outlooks, Storm Reports (and
 
    * This takes in datasets data/pph/labelled_pph.nc, data/displacement/displacements.nc, and data/outlooks/grid_outlooks.nc and saves colocated/recentered version; that is, they are regridded such that x=0, y=0 is at the centroid of the areas of highest outlook probability rather than the SW corner of the dataset. We are aware that, all points at the same x, y are not necessarily the same distance from (0, 0) due to (0, 0) being at a different point on the projection for each date.
    * in displacements_recentered, we add additional day-level statistics analagous to e_shift, n_shift, total_div but limited to only x/y greater than or less than 0 (e.g. e_shift_s is the eastward shift at points with y<0 (south of outlook center)).
-   * Typical running time: about 2 hours
+   * Typical running time: about 2 hours to created colocated datasets, 5-10 minutes to create plots (most of which is data subsetting)
 8. Run `labelling.ipynb` with labelled = True
 
    * This reads in the CO, PPH, and report data output by `load_data.ipynb` from `/data` (if labelled = False) or already-partially-labelled CO, PPH, and report data (if labelled = True) and adds the following variables. Each date is associated with one value for each of these variables. Re-running overwrites existing values for any variable.
@@ -97,7 +97,7 @@ This repository contains code to analyze Convective Outlooks, Storm Reports (and
          * `BS_NUM`: the brier score for all grid points on date between the outlook probability of seeing a storm report within 25 miles of a point and whether that actually occurred.
          * `RMSE_NUM`: the RMSE between the outlook probability of seeing a storm report within 25 miles and the PPH probability
          * `NEIGH_NUM`: the MSE between outlook probability of seeing a storm report within 25 miles and the true probability, as given by the fraction of the 5x5 nearest gridpoints that had a storm report within 25 miles.
-       * Metrics Using Probabilistic Contingency Tables: As described in create_contingency.ipynb, the (expected) contingency table values a, b, c, and d are calculated for each day/hazard type. From these values, the following statistics are calculated: `_H/W/T` represents hazard type, all followed by `_NUM`
+       * Metrics Using Probabilistic Contingency Tables: As described in create_contingency.ipynb, the (expected) contingency table values a, b, c, and d are calculated for each day/hazard type. From these values, the following statistics are calculated: `_H/W/T` represents hazard type, all followed by `_NUM`. [NOTE: THESE ARE FOR FULL GRID, NOT JUST CONUS--NOT YET UPDATED!]
          * `PC` (Percent Correct): (a + d) / (a + b + c + d)
          * `POD` (Probability of Detection): a / (a + c)
            * The expected mean probability of any [hail/wind/tornado] hazard occurance in the Day 1 outlook across grid squares for which there was a verifying event within 25 miles
