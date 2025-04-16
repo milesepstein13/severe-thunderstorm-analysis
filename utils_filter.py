@@ -34,9 +34,11 @@ def read_datasets(data_location, mod_string = 'all'):
 
     if mod_string == 'all':
         print('reading outlooks 1')
-        outlooks = gp.read_file(data_location + '/outlooks/' + mod_string + '_outlooks_1.shp', engine="pyogrio")
+        outlook1 = gp.read_file(f"{data_location}/outlooks/{mod_string}_outlooks_1.shp", engine="pyogrio")
         print('reading outlooks 2')
-        outlooks = outlooks.append(gp.read_file(data_location + '/outlooks/' + mod_string + '_outlooks_2.shp'), engine="pyogrio")
+        outlook2 = gp.read_file(f"{data_location}/outlooks/{mod_string}_outlooks_2.shp", engine="pyogrio")
+        outlooks = gp.GeoDataFrame(pd.concat([outlook1, outlook2], ignore_index=True), crs=outlook1.crs)
+
 
     else:
         print('reading outlooks')
