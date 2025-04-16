@@ -146,7 +146,7 @@ This repository contains code to analyze Convective Outlooks, Storm Reports (and
 * `create_performance_diagrams.ipynb`
   * Contains function that can create any requested performance diagram. This is then used to create PDs (colored by hazard type), overall and broken down by region, season, and year. Timeseries of performence diagram variables (POD, FAR, bias, CSI) are plotted with annual and seasonal running averages
   * Running time: ~ a minute
-* create_reliability_diagrams.ipynb
+* `create_reliability_diagrams.ipynb`
   * Creates reliability diagrams (aka calibration curves) for outlook vs pph probability, subset as desired
   * Running time:
 * `clustering.ipynb` clusters all days with various methods (knn, k-means, pca) after labelling. First, a mxn matrix is created, where m is the number of samples (dates of interest, in our case MDT/HIGH days since 2002) and n is the dimensionality (in our case the number of numerical or ordinal labels). This data is standardized before any PCA or clustering.
@@ -158,12 +158,14 @@ This repository contains code to analyze Convective Outlooks, Storm Reports (and
 ## Notes/Standards/Assumptions:
 
 * Some functions are modularized and availible in the `utils` files. Some especially useful functions are:
+
   * `read_datasets` in `utils_filters.py` reads in the outlooks, PPH, and reports datasets, use `mod_string` to read different datasets:
     * `mod_string = 'all'`  loads post-`load_data.ipynb`
     * `mod_string = 'labelled'` loads post-`labelling.ipynb`
 * We only consider the Day 3 outlook (08z), both Day 2 outlooks (07z and 17z), and the first (06z) Day 1 outlook. Later Day 1 outlooks are not considered because these forecasts are issued after the beginning of the full verification period.
 * We mostly work with all-hazard (as opposed to hazard-specific) outlooks. Numerical probabilities for all-hazard are available directly on Days 3 and 2 (pre- 02/01/2020), but must be constructed from hazard-specific probabilities on Day 1 and post-02/01/2020 Day 2 by taking the max of any hazard-specific probability at each gridpoint.
 * Dates when forecast practices changed:
+
   * MRGL and ENH were added as categorical risks: October 23, 2014
   * Day 3 forecasts first issued '200203300000'
   * Day 2 7z forecasts first issued '199707100000'
@@ -171,6 +173,8 @@ This repository contains code to analyze Convective Outlooks, Storm Reports (and
 * All gridded datasets are on the same grid as used in PPH datasets, which is stated to be the [NCEP 211 Grid](https://www.nco.ncep.noaa.gov/pmb/docs/on388/tableb.html#GRID211), although I have difficulty exactly recreating this grid and have only used the grid directly pulled from the PPH datasets.
 * Marine hail/wind and waterspouts are not included.
 * The following dates appear to erroneously have no day-1 outlook in the downloaded data, so they are excluded from the dataset prior to figure creation:
+
   ```
   ['200204190000', '200204200000', '200204210000', '200204250000', '200205060000', '200205250000', '200207310000', '200208130000', '200208300000', '200211090000', '200212230000', '200302030000', '200303250000', '200304140000', '200304150000', '200304160000', '200305100000', '200306250000', '200306280000', '200307270000', '200307280000', '200309030000', '200312280000', '200404020000', '200404140000', '200405230000', '200408090000', '200410140000', '200503300000', '200506060000', '200508030000', '200701040000', '200905280000', '201105210000', '202005240000', '202106130000']
   ```
+  - Oops, that's not true. Those days just have cylce = -1, which we are fixing in load_data.
