@@ -32,7 +32,7 @@ This repository contains code to analyze Convective Outlooks, Storm Reports (and
 
    * This takes in the CO, PPH, and report data output by `load_data.ipynb` from `/data` and creates gridded netCDF files (usable by xarray) from outlook `.shp` and report `.csv` files. These `.nc` files are saved alongside the `.shp` and `.csv` files they were derived from (as `grid_outlooks.nc` and `grid_reports.csv` respectively). For each day: each outlook issued for that day is "gridized" by noting the implied probability of a storm occuring within 25 miles of each gridpoint, and reports are "gridized" by counting the number of storm reports within 25 miles of each gridpoint and noting whether or not any storm report occurred within 25 miles of each gridpoint.
    * Outlooks are only gridized beginning when day 3 outlooks are issued (since prior outlooks are purely categorical), which is the time period we are ultimately working with, but be warned if attempting to use for earlier time periods.
-   * Typical running time: `gridize.ipynb` (for outlooks) takes a few days to run (and can be resumed partway through if needed). `gridize2.ipynb` takes a few minutes
+   * Typical running time: a few minutes for each.
 5. Run `create_contingency.ipynb`
 
    Using `labelled_pph.nc` and `grid_outlooks.nc`, this file creates the probabilistic contingency tables between probabilistic convective outlooks and pph. At each grid point, a, b, c, and d can be calculated from the forecast probability and PPH probability:
