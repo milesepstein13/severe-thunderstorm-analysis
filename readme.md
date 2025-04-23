@@ -149,7 +149,7 @@ This repository contains code to analyze Convective Outlooks, Storm Reports (and
   * Running time: ~ a minute
 * `create_reliability_diagrams.ipynb`
   * Creates reliability diagrams (aka calibration curves) for outlook vs pph probability, subset as desired
-  * Running time:
+  * Running time: ~ a minute
 * `clustering.ipynb` clusters all days with various methods (knn, k-means, pca) after labelling. First, a mxn matrix is created, where m is the number of samples (dates of interest, in our case MDT/HIGH days since 2002) and n is the dimensionality (in our case the number of numerical or ordinal labels). This data is standardized before any PCA or clustering.
   * PCA: PCA is run on this data matrix, and the fraction of variance explained by each PC and the components of the first few PCs are printed
   * Clustering: `cluster_partial()` clusters the dataset in only the `cluster_vars` dimensions with each clustering algorithm in `clustering_algorithms`, returning a dict (by clustering algorithms) of lists of the portions of the entire dataset in each cluster. Then, for the clusters created by each method, `summarize_clusters` plots the cluster centers on a map (with some higher-dimension information encoded in plot point characteristics), creates distribution 2d-historgams for each variable (by cluster number), and/or saves to text the centers of each cluster. Plots can be shown in console or saved in `/plots/clustering/... `
