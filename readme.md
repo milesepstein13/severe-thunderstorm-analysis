@@ -58,7 +58,7 @@ This repository contains code to analyze Convective Outlooks, Storm Reports (and
      * `e_shift` (East Shift): Average e_flow across all gridpoints, weighted by outlook probability (or PPH probability if outlook is zero).
      * `n_shift` (North Shift): Average n_flow is taken across all gridpoints, weighted by outlook probability (or PPH probability if outlook is zero).
      * `total_div` (Divergence): Average divergence in the x/y_flow field across all gridpoints, weighted by outlook probability (or PPH probability if outlook is zero).
-   * Typical running time: about a day
+   * Typical running time: a few hours
 7. Run `displacement_colocation.ipynb`
 
    * This takes in datasets data/pph/labelled_pph.nc, data/displacement/displacements.nc, and data/outlooks/grid_outlooks.nc and saves colocated/recentered version; that is, they are regridded such that x=0, y=0 is at the centroid of the areas of highest outlook probability rather than the SW corner of the dataset. We are aware that, all points at the same x, y are not necessarily the same distance from (0, 0) due to (0, 0) being at a different point on the projection for each date.
@@ -128,7 +128,7 @@ This repository contains code to analyze Convective Outlooks, Storm Reports (and
      * characterization by environmental data: to be added
      * The modified datasets are also saved in `/data`, with `labelled_` as a prefix on the filename
      * When functions to add new labels are added, this file can be rerun with `labelled = True` to begin with already-labelled datasets and only run the additon of desired new labels. If doing so, the pph data will be saved as `labelled_pph2.nc` (since `labelled_pph.nc` is in use). You need to manually delete `labelled_pph.nc` and then rename `labelled_pph2.nc` as labelled_pph2.nc once this file is done running.
-   * Running Time: ~30 minutes to read in data. Each label takes a handful of minutes to add, so the entire file can be run on the order of a few hours.
+   * Running Time: ~30 minutes to read in data. Each label is added in a few seconds, except regions which takes on the order of hours (and often needs to be restarted many times).
 9. To be completed: downloading and incorporating ERA5 data associated with locations and dates of interest
 10. Further steps: ML analysis of all this data
 
@@ -143,7 +143,7 @@ This repository contains code to analyze Convective Outlooks, Storm Reports (and
   * Also identifies days that appear to have missing outlooks
   * Running Time: about 20 minutes more to plot 2d histograms, scaling as n^2 with number of labels
 * `explore_date.ipynb` plots the Day 3, Day 2 7z, Day 2 17z, and Day 1 outlooks, the PPH, reports, displacements, and a performance diagram on maps, along with printing and saving to a `.txt` file all labels, for any dates requested. The results are saved in [/plots/daily/[datestring]](https://github.com/milesepstein13/severe-thunderstorm-analysis/tree/master/plots/daily)
-  * Running time: about 30 minutes to read datasets, then 5-10 min per requested date after reading datasets
+  * Running time: about 30 minutes to read datasets, then ~5 min per requested date after reading datasets
 * `create_performance_diagrams.ipynb`
   * Contains function that can create any requested performance diagram. This is then used to create PDs (colored by hazard type), overall and broken down by region, season, and year. Timeseries of performence diagram variables (POD, FAR, bias, CSI) are plotted with annual and seasonal running averages
   * Running time: ~ a minute
@@ -173,9 +173,8 @@ This repository contains code to analyze Convective Outlooks, Storm Reports (and
   * Day 2 17z forecasts first issued '199504040000'
 * All gridded datasets are on the same grid as used in PPH datasets, which is stated to be the [NCEP 211 Grid](https://www.nco.ncep.noaa.gov/pmb/docs/on388/tableb.html#GRID211), although I have difficulty exactly recreating this grid and have only used the grid directly pulled from the PPH datasets.
 * Marine hail/wind and waterspouts are not included.
-* The following dates appear to erroneously have no day-1 outlook in the downloaded data, so they are excluded from the dataset prior to figure creation:
+* The following dates appear to erroneously have no day-1 outlook in the downloaded data (Zero Day 1 probability but Day 2 probability at least SLGT (.15)), so they are excluded from the dataset prior to figure creation:
 
   ```
-  ['200204190000', '200204200000', '200204210000', '200204250000', '200205060000', '200205250000', '200207310000', '200208130000', '200208300000', '200211090000', '200212230000', '200302030000', '200303250000', '200304140000', '200304150000', '200304160000', '200305100000', '200306250000', '200306280000', '200307270000', '200307280000', '200309030000', '200312280000', '200404020000', '200404140000', '200405230000', '200408090000', '200410140000', '200503300000', '200506060000', '200508030000', '200701040000', '200905280000', '201105210000', '202005240000', '202106130000']
+  ['200204250000', '200208300000', '200304150000', '200304160000', '200306250000', '200307270000', '200307280000', '200312280000', '200404140000', '200408090000', '200905280000', '201105210000', '202005240000']
   ```
-  - Oops, that's not true. Those days mostly just have cylce = -1, which we are fixing in load_data.
